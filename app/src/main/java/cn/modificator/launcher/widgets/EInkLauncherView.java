@@ -132,7 +132,6 @@ public class EInkLauncherView extends ViewGroup{
         int childTop = i * getItemHeight();// + (i * dividerSize);
         int childBottom = (i + 1) * getItemHeight();// + (i * dividerSize);
 //                view.measure(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-
         getChildAt(i*COL_NUM+j).layout(childLeft, childTop, childRight, childBottom);
       }
     }

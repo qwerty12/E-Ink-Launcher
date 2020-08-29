@@ -425,9 +425,8 @@ public class Launcher extends Activity {
   private void activeManage() {
     Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
     intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, new ComponentName(this, AdminReceiver.class));
-    intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "E-Ink Launcher 获取锁屏权限");
-    startActivity(intent);
-//    startActivityForResult(intent, 10001);
+    intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, getText(R.string.dev_admin_desc));
+    // startActivityForResult(intent, 10001);
   }
 
   @Override
