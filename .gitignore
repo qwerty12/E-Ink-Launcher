@@ -12,3 +12,6 @@ projectFilesBackup
 .idea
 config.gradle
 KeyStore.key
+
+/app/build/
+/app/release/
