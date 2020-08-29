@@ -313,7 +313,6 @@ public class EInkLauncherView extends ViewGroup{
         return;
       }
       ResolveInfo info = dataList.get(position);
-<<<<<<< HEAD
       if (info.activityInfo.packageName == AppDataCenter.oneKeyLockPackageName){
         ((Launcher) v.getContext()).lockScreen();
       }else if (info.activityInfo.packageName == AppDataCenter.wifiPackageName) {
@@ -327,20 +326,11 @@ public class EInkLauncherView extends ViewGroup{
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        intent.setAction(Intent.ACTION_MAIN);
         intent.setComponent(componentName);
+        intent.setPackage(info.activityInfo.packageName);
         v.getContext().startActivity(intent);
       }
-=======
-      ComponentName componentName = new ComponentName(info.activityInfo.packageName, info.activityInfo.name);
-      Intent intent = new Intent();
-      intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-      intent.addCategory(Intent.CATEGORY_LAUNCHER);
-      intent.setAction(Intent.ACTION_MAIN);
-      intent.setComponent(componentName);
-      intent.setPackage(info.activityInfo.packageName);
-      v.getContext().startActivity(intent);
-
->>>>>>> 4422dc299b580f88711aef82314d3dd3baf56ff0
     }
   }
 
