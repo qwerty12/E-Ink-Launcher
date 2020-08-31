@@ -8,4 +8,7 @@
             <enum name="height" value="1" />
         </attr>
     </declare-styleable>
+    <declare-styleable name="AutoFitRecyclerView">
+        <attr name="columnEstimatedWidth" format="dimension" />
+    </declare-styleable>
 </resources>

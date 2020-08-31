@@ -52,6 +52,8 @@ public class Launcher extends Activity {
   public static final String LAUNCHER_FONT_SIZE = "launcherFontSize";
   public static final String LAUNCHER_HIDE_DIVIDER = "launcherHideDivider";
 
+  // TODO initialize isFirstRun
+
   EInkLauncherView launcherView;
   AppDataCenter dataCenter = null;
   Config config;
@@ -104,6 +106,7 @@ public class Launcher extends Activity {
     launcherView.setFontSize(config.getFontSize());
 
     dataCenter = new AppDataCenter(this);
+    // TODO loadAllApps
     dataCenter.setHideApps(config.getHideApps());
 
     dataCenter.setPageStatus(pageStatus);
@@ -137,6 +140,7 @@ public class Launcher extends Activity {
       @Override
       public void onClick(View v) {
         launcherView.setDelete(false);
+        // TODO CompareMappsToHideAppsAndRemoveHideApps
         dataCenter.refreshAppList();
         config.setHideApps(dataCenter.getHideApps());
         v.setVisibility(View.GONE);
@@ -311,6 +315,7 @@ public class Launcher extends Activity {
   BroadcastReceiver appChangeReceiver = new BroadcastReceiver() {
     @Override
     public void onReceive(Context context, Intent intent) {
+        // TODO loadAllApps CompareMappsToHideAppsAndRemoveHideApps
       dataCenter.refreshAppList(launcherView.isDelete());
     }
   };

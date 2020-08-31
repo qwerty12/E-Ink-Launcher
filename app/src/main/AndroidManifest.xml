@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cn.modificator.launcher">
-    <!--package="cn.modificator.launcher" android:sharedUserId="android.uid.system">-->
-
+    <!-- package="cn.modificator.launcher" android:sharedUserId="android.uid.system"> -->
     <uses-permission android:name="android.permission.RESTART_PACKAGES" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -14,10 +12,10 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.SHUTDOWN" />
     <uses-permission android:name="android.permission.REBOOT" />
-    <uses-permission android:name="android.permission.DELETE_PACKAGES"/>
-    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.DELETE_PACKAGES" />
+    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name=".App"
@@ -26,6 +24,27 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        
+        <receiver android:name=".InstallShortcutReceiver"
+            android:permission="com.android.launcher.permission.INSTALL_SHORTCUT">
+            <intent-filter>
+                <action android:name="com.android.launcher.action.INSTALL_SHORTCUT" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name=".AddShortcutActivity"
+            android:theme="@style/Transparent"
+            android:noHistory="true"
+            android:taskAffinity=".AddShortcutActivity"
+            android:excludeFromRecents="true">
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+                <action android:name="android.content.pm.action.CONFIRM_PIN_SHORTCUT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <service
             android:name=".ftpservice.FTPService"
@@ -38,29 +57,33 @@
             <meta-data
                 android:name="android.app.device_admin"
                 android:resource="@xml/lock" />
+
             <intent-filter>
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
         </receiver>
         <receiver
             android:name=".ftpservice.FTPReceiver"
-            android:exported="false">
-        </receiver>
-        
+            android:exported="false" />
+
         <provider
+            android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileProvider"
-            android:grantUriPermissions="true"
-            android:name="androidx.core.content.FileProvider">
-            <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/filepath"/>
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepath" />
         </provider>
 
-        <activity android:name=".CrashDetailPage"
+        <activity
+            android:name=".CrashDetailPage"
             android:process=":crash_page">
-            <meta-data android:name="com.yotadevices.keep_on_epd_screen" android:value="true"/>
+            <meta-data
+                android:name="com.yotadevices.keep_on_epd_screen"
+                android:value="true" />
         </activity>
 
-        <service android:name=".model.HomeEntranceService">
-        </service>
+        <service android:name=".model.HomeEntranceService" />
     </application>
 
 </manifest>

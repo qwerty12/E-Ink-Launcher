@@ -121,4 +121,7 @@ well it\u0027s already open source
 Thanks.
 ーーーーーーーーーーーーーーーーーーーー
 </string>
+    <string name="sort_title">Custom Sort</string>
+    <string name="sort_description">Specify an integer as priority(sorted in descending order) for each app. New app will be automatically specified 0.</string>
+    <string name="sort_input_priority_hint">Input priority for this app</string>
 </resources>

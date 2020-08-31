@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ResolveInfo;
+import android.content.pm.LauncherApps;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -41,6 +42,8 @@ public class AppDataCenter {
 //        loadApps();
   }
 
+  // TODO getAppListWithoutHidenApps getAppListFromPre setAppsListToPre
+
   public void setLauncherView(EInkLauncherView launcherView) {
     this.launcherView = launcherView;
     this.launcherView.setOnSingleAppHideChangeListener(new EInkLauncherView.OnSingleAppHideChange() {
@@ -48,6 +51,7 @@ public class AppDataCenter {
       public void change(String pkg) {
 //                if (!hideApps.add(pkg))
 //                    hideApps.remove(pkg);
+        // TODO CompareMappsToHideAppsAndRemoveHideApps
         refreshAppList();
       }
     });
@@ -66,11 +70,15 @@ public class AppDataCenter {
     loadApps();
   }
 
+  //
+
   public Set<String> getHideApps() {
     return hideApps;
   }
 
+  // TODO CompareMappsToHideAppsAndRemoveHideApps
   private void loadApps() {
+    // TODO update the logics
     Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
     mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
     if (launcherView != null) {
@@ -94,9 +102,11 @@ public class AppDataCenter {
   }
 
   private void loadAllApps() {
+
     Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
     mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
     mApps.clear();
+    // TODO modify
     mApps.addAll(mContext.getPackageManager().queryIntentActivities(mainIntent, 0));
     mApps.add(createPowerIcon());
     mApps.add(createWifiIcon());
@@ -132,11 +142,14 @@ public class AppDataCenter {
     refreshAppList(false);
   }
 
+  // TODO showAll?
   public void refreshAppList(boolean showAll) {
     if (showAll) loadAllApps();
     else loadApps();
     setPageShow();
   }
+
+  // TODO sortAppList
 /*
     public void addAppInfo(ResolveInfo info) {
         mApps.add(info);

@@ -49,6 +49,7 @@ public class EInkLauncherView extends ViewGroup{
   int ROW_NUM = 5;
   int COL_NUM = 5;
   float dragDistance = 0;
+  // TODO: type -> ComparableResolveInfo
   private List<ResolveInfo> dataList = new ArrayList<>();
   PackageManager packageManager;
   TouchListener touchListener;
