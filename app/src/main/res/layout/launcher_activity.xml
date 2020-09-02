@@ -82,7 +82,7 @@
                 android:src="@drawable/navibar_icon_settings_highlight" />
 
             <Button
-                android:id="@+id/lastPage"
+                android:id="@+id/previousPage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Last Page"

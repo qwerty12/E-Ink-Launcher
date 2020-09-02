@@ -3,8 +3,22 @@ package cn.modificator.launcher;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
+import cn.modificator.launcher.model.LauncherItemInfo;
+import cn.modificator.launcher.model.LauncherItemInfoComparator;
+import cn.modificator.launcher.model.LauncherItemInfoDeserializer;
+import cn.modificator.launcher.model.LauncherItemInfoSerializer;
 
 /**
  * Created by mod on 16-4-23.
@@ -12,23 +26,94 @@ import java.util.Set;
 public class Config {
   Context context;
   //列数
-  public static int colNum = -1;
+  public int colNum = -1;
   //行数
-  public static int rowNum = -1;
-  public static float fontSize = -1;
-  public static int appNameLines = Integer.MAX_VALUE;
-  public static boolean hideDivider = false;
-  public static boolean showStatusBar = false;
-  public static boolean showCustomIcon = false;
+  public int rowNum = -1;
+  public float fontSize = -1;
+  public int itemTitleLines = Integer.MAX_VALUE;
+  public boolean hideDivider = false;
+  public boolean showStatusBar = false;
+  public boolean showCustomIcon = false;
+  public int sortFlags = -1;
   private String preferencesFileName = "launcherPropertyFile";
-  private Set<String> hideApps = new HashSet<>();
+  private Set<String> hiddenItemIds = new HashSet<>();
+  private List<LauncherItemInfo> shortcutItems;
+  private HashMap<String, Integer> priorityMap;
+  public Gson gson;
 
   public Config(Context context) {
     this.context = context;
     getCustomIconShowStatus();
     getDividerHideStatus();
     getStatusBarShowStatus();
-    getAppNameLines();
+    getItemTitleLines();
+
+    GsonBuilder gsonBuilder = new GsonBuilder();
+    gsonBuilder.registerTypeAdapter(LauncherItemInfo.class, new LauncherItemInfoSerializer());
+    gsonBuilder.registerTypeAdapter(LauncherItemInfo.class, new LauncherItemInfoDeserializer());
+    gson = gsonBuilder.create();
+  }
+
+  public Map<String, Integer> getPriorityMap() {
+    if (priorityMap == null) {
+      SharedPreferences preferences = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE);
+      String priorityJsonString = preferences.getString(Launcher.PRIORITY_KEY, "{}");
+      priorityMap = gson.fromJson(priorityJsonString, new TypeToken<HashMap<String, Integer>>() {}.getType());
+    }
+    return Collections.unmodifiableMap(priorityMap);
+  }
+
+  public void setPriorityMap(Map<String, Integer> priorityMap) {
+    this.priorityMap.clear();
+    this.priorityMap.putAll(priorityMap);
+
+    SharedPreferences preferences = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE);
+    preferences.edit().putString(Launcher.PRIORITY_KEY,
+            gson.toJson(this.priorityMap)
+    ).apply();
+  }
+
+  public List<LauncherItemInfo> getShortcutItems() {
+    if (shortcutItems == null) {
+      SharedPreferences preferences = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE);
+      String shortcutItemsJsonString = preferences.getString(Launcher.SHORTCUT_ITEMS_KEY, "[]");
+      shortcutItems = gson.fromJson(shortcutItemsJsonString, new TypeToken<ArrayList<LauncherItemInfo>>() {}.getType());
+    }
+    return Collections.unmodifiableList(shortcutItems);
+  }
+
+  public void setShortcutItems(List<LauncherItemInfo> shortcutItems) {
+    if (shortcutItems == null) {
+      return;
+    }
+
+    this.shortcutItems.clear();
+    this.shortcutItems.addAll(shortcutItems);
+
+    SharedPreferences preferences = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE);
+    preferences.edit().putString(Launcher.SHORTCUT_ITEMS_KEY,
+            gson.toJson(this.shortcutItems)
+    ).apply();
+  }
+
+  public int getSortFlags() {
+    if (sortFlags == -1) {
+      SharedPreferences preferences = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE);
+      sortFlags = preferences.getInt(
+              Launcher.SORT_FLAGS_KEY,
+              LauncherItemInfoComparator.SORT_MODE_FIRST_APPEAR | LauncherItemInfoComparator.SORT_ORDER_ASC
+      );
+    }
+    return sortFlags;
+  }
+
+  public void setSortFlags(int sortFlags) {
+    if (this.sortFlags == sortFlags) {
+      return;
+    }
+    this.sortFlags = sortFlags;
+    SharedPreferences preferences = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE);
+    preferences.edit().putInt(Launcher.SORT_FLAGS_KEY, sortFlags).apply();
   }
 
   public int getColNum() {
@@ -64,81 +149,81 @@ public class Config {
     preferences.edit().putInt(Launcher.ROW_NUM_KEY, rowNum).apply();
   }
 
-  public void addHideApp(String packageName) {
-    hideApps.add(packageName);
+  public void addHiddenItemId(String id) {
+    hiddenItemIds.add(id);
     SharedPreferences preferences = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE);
-    preferences.edit().putStringSet(Launcher.HIDE_APPS_KEY, hideApps).apply();
+    preferences.edit().putStringSet(Launcher.HIDDEN_ITEM_IDS_KEY, hiddenItemIds).apply();
   }
 
-  public void removeHideApp(String packageName) {
-    hideApps.remove(packageName);
+  public void removeHiddenItemId(String id) {
+    hiddenItemIds.remove(id);
     SharedPreferences preferences = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE);
-    preferences.edit().putStringSet(Launcher.HIDE_APPS_KEY, hideApps).apply();
+    preferences.edit().putStringSet(Launcher.HIDDEN_ITEM_IDS_KEY, hiddenItemIds).apply();
   }
 
-  public void setHideApps(Set<String> hideApps) {
-    this.hideApps.clear();
-    this.hideApps.addAll(hideApps);
+  public void setHiddenItemIds(Set<String> hiddenItemIds) {
+    this.hiddenItemIds.clear();
+    this.hiddenItemIds.addAll(hiddenItemIds);
     SharedPreferences preferences = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE);
-    preferences.edit().putStringSet(Launcher.HIDE_APPS_KEY, this.hideApps).apply();
+    preferences.edit().putStringSet(Launcher.HIDDEN_ITEM_IDS_KEY, this.hiddenItemIds).apply();
   }
 
-  public Set<String> getHideApps() {
-    if (hideApps.isEmpty()) {
-      hideApps.addAll(context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE).getStringSet(Launcher.HIDE_APPS_KEY, new HashSet<String>()));
+  public Set<String> getHiddenItemIds() {
+    if (hiddenItemIds.isEmpty()) {
+      hiddenItemIds.addAll(context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE).getStringSet(Launcher.HIDDEN_ITEM_IDS_KEY, new HashSet<String>()));
     }
-    return hideApps;
+    return hiddenItemIds;
   }
 
   public float getFontSize() {
     if (fontSize == -1) {
-      fontSize = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE).getFloat(Launcher.LAUNCHER_FONT_SIZE, 14);
+      fontSize = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE).getFloat(Launcher.FONT_SIZE_KEY, 14);
     }
     return fontSize;
   }
 
   public void saveFontSize() {
     SharedPreferences preferences = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE);
-    preferences.edit().putFloat(Launcher.LAUNCHER_FONT_SIZE, fontSize).apply();
+    preferences.edit().putFloat(Launcher.FONT_SIZE_KEY, fontSize).apply();
   }
 
   public boolean getDividerHideStatus() {
-    return hideDivider = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE).getBoolean(Launcher.LAUNCHER_HIDE_DIVIDER, true);
+    return hideDivider = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE).getBoolean(Launcher.HIDE_DIVIDER_KEY, true);
   }
 
   public void setDividerHideStatus(boolean b) {
     hideDivider = b;
     SharedPreferences preferences = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE);
-    preferences.edit().putBoolean(Launcher.LAUNCHER_HIDE_DIVIDER, b).apply();
+    preferences.edit().putBoolean(Launcher.HIDE_DIVIDER_KEY, b).apply();
   }
 
   public boolean getStatusBarShowStatus(){
-    return showStatusBar = context.getSharedPreferences(preferencesFileName,Context.MODE_PRIVATE).getBoolean(Launcher.LAUNCHER_SHOW_STATUS_BAR,true);
+    return showStatusBar = context.getSharedPreferences(preferencesFileName,Context.MODE_PRIVATE).getBoolean(Launcher.SHOW_STATUS_BAR_KEY,true);
   }
 
   public void setStatusBarShowStatus(boolean b){
     showStatusBar = b;
     SharedPreferences preferences = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE);
-    preferences.edit().putBoolean(Launcher.LAUNCHER_SHOW_STATUS_BAR, b).apply();
+    preferences.edit().putBoolean(Launcher.SHOW_STATUS_BAR_KEY, b).apply();
   }
 
   public boolean getCustomIconShowStatus(){
-    return showCustomIcon = context.getSharedPreferences(preferencesFileName,Context.MODE_PRIVATE).getBoolean(Launcher.LAUNCHER_SHOW_CUSTOM_ICON,false);
+    return showCustomIcon = context.getSharedPreferences(preferencesFileName,Context.MODE_PRIVATE).getBoolean(Launcher.SHOW_CUSTOM_ICON_KEY,false);
   }
 
   public void setCustomIconShowStatus(boolean b){
     showCustomIcon = b;
     SharedPreferences preferences = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE);
-    preferences.edit().putBoolean(Launcher.LAUNCHER_SHOW_CUSTOM_ICON, b).apply();
+    preferences.edit().putBoolean(Launcher.SHOW_CUSTOM_ICON_KEY, b).apply();
   }
 
-  public void setAppNameLines(int lineNum){
-    appNameLines = lineNum;
+  public void setItemTitleLines(int lineNum){
+    itemTitleLines = lineNum;
     SharedPreferences preferences = context.getSharedPreferences(preferencesFileName, Context.MODE_PRIVATE);
-    preferences.edit().putInt(Launcher.APP_NAME_SHOW_LINES, lineNum).apply();
+    preferences.edit().putInt(Launcher.ITEM_TITLE_LINES_KEY, lineNum).apply();
   }
 
-  public int getAppNameLines(){
-    return appNameLines = context.getSharedPreferences(preferencesFileName,Context.MODE_PRIVATE).getInt(Launcher.APP_NAME_SHOW_LINES,Integer.MAX_VALUE);
+  public int getItemTitleLines(){
+    return itemTitleLines = context.getSharedPreferences(preferencesFileName,Context.MODE_PRIVATE).getInt(Launcher.ITEM_TITLE_LINES_KEY,Integer.MAX_VALUE);
   }
 }

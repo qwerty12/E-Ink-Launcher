@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
-import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.Settings;
 
@@ -75,12 +74,12 @@ public class WifiControl {
 
   public static void bind(View view){
     if (view==null){
-      instance.appImage=null;
+      instance.appImage = null;
       instance.appName = null;
       return;
     }
-    instance.appName = view.findViewById(R.id.appName);
-    instance.appImage = view.findViewById(R.id.appImage);
+    instance.appName = view.findViewById(R.id.itemTitle);
+    instance.appImage = view.findViewById(R.id.itemIcon);
     instance.updateStatus();
   }
 

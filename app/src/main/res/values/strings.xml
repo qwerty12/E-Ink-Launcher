@@ -45,6 +45,7 @@
     <string name="dialog_hide">Hide</string>
     <string name="dialog_uninstall">Uninstall</string>
     <string name="dialog_pkg_name">Package Name: %s</string>
+    <string name="dialog_shortcut_id">Name: %s\nId: %s</string>
     <string name="dialog_close">Close</string>
     <string name="dialog_confim">Confirm</string>
 
@@ -80,7 +81,7 @@
     <string name="show_wifi_name">Show Wifi Name</string>
     <string name="show_custom_icon">Show custom icon</string>
     <string name="notification_click_back_launcher">Click here, back to Launcher</string>
-    <string name="app_show_name">App name</string>
+    <string name="item_title_display">App name</string>
 
     <string name="dev_admin_desc">E-Ink Launcher getting lock screen permissions</string>
     <!-- E-Ink Launcher 获取锁屏权限 -->
@@ -122,6 +123,9 @@ Thanks.
 ーーーーーーーーーーーーーーーーーーーー
 </string>
     <string name="sort_title">Custom Sort</string>
-    <string name="sort_description">Specify an integer as priority(sorted in descending order) for each app. New app will be automatically specified 0.</string>
+    <string name="sort_description">Specify an integer as priority(sorted in descending order when mode is +) for each app. New app will be automatically specified 0.</string>
     <string name="sort_input_priority_hint">Input priority for this app</string>
+    <string name="sort_method">Sort</string>
+    <string name="setting_sort">Custom Sort</string>
+    <string name="title_activity_sort">Sort</string>
 </resources>

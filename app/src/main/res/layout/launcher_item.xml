@@ -25,7 +25,7 @@
                 android:layout_weight="1" />
 
             <cn.modificator.launcher.widgets.RatioImageView
-                android:id="@+id/appImage"
+                android:id="@+id/itemIcon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
@@ -41,7 +41,7 @@
         </LinearLayout>
 
         <cn.modificator.launcher.widgets.ObserverFontTextView
-            android:id="@+id/appName"
+            android:id="@+id/itemTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -53,6 +53,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/item_menu"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"

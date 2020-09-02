@@ -406,15 +406,53 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="@string/app_show_name"
+                android:text="@string/item_title_display"
                 android:textSize="@dimen/menu_item_text_size" />
 
             <Spinner
-                android:id="@+id/appNameLine"
+                android:id="@+id/item_title_line"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
-                android:entries="@array/app_name_line"
+                android:entries="@array/item_title_line"
+                android:gravity="center"/>
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_height="1dp"
+            android:background="#000000" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/menu_item_height"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/sort_method"
+                android:textSize="@dimen/menu_item_text_size" />
+
+            <Spinner
+                android:id="@+id/sort_method_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:entries="@array/sort_method"
                 android:gravity="center"/>
 
             <Space
@@ -509,14 +547,27 @@
             android:background="#000000" />
 
         <TextView
-            android:id="@+id/deleteApp"
+            android:id="@+id/manageApps"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:gravity="center_vertical"
             android:paddingLeft="20dp"
             android:text="@string/setting_apps_manager"
-            android:textSize="@dimen/menu_item_text_size"
-            tools:text="管理应用" />
+            android:textSize="@dimen/menu_item_text_size" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#000000" />
+
+        <TextView
+            android:id="@+id/toSort"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="20dp"
+            android:text="@string/setting_sort"
+            android:textSize="@dimen/menu_item_text_size" />
 
         <View
             android:layout_width="match_parent"

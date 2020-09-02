@@ -71,7 +71,7 @@
     <string name="show_statusbar">显示状态栏</string>
     <string name="show_wifi_name">显示WiFi名字</string>
     <string name="notification_click_back_launcher">点击这里回到桌面</string>
-    <string name="app_show_name">App 名字</string>
+    <string name="item_title_display">App 名字</string>
     <string name="dev_admin_desc">E-Ink Launcher 获取锁屏权限</string>
     <string name="choose_app_title">打开方式</string>
     <string name="no_apps_to_open">无法找到可以打开此文件的应用</string>

@@ -11,10 +11,13 @@ import android.content.pm.ShortcutInfo;
 import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
+
+import cn.modificator.launcher.model.LauncherItemInfo;
 
 public class AddShortcutActivity extends Activity {
 
@@ -23,6 +26,8 @@ public class AddShortcutActivity extends Activity {
     super.onCreate(savedInstanceState);
     super.setContentView(R.layout.activity_add_shortcut);
     this.setFinishOnTouchOutside(true);
+
+    LauncherItemInfo itemInfo = new LauncherItemInfo(LauncherItemInfo.TYPE_SHORTCUT, System.currentTimeMillis());
 
     Intent intent = getIntent();
 
@@ -33,8 +38,26 @@ public class AddShortcutActivity extends Activity {
     if (Build.VERSION.SDK_INT >= 26) {
       LauncherApps la = (LauncherApps) getApplicationContext().getSystemService(Context.LAUNCHER_APPS_SERVICE);
       LauncherApps.PinItemRequest pir = la.getPinItemRequest(getIntent());
-      if (pir != null) {
-        aaa += "\nPIR: " + pir.toString();
+      if (pir != null && pir.getRequestType() == LauncherApps.PinItemRequest.REQUEST_TYPE_SHORTCUT && pir.isValid()) {
+        pir.accept();
+        ShortcutInfo si = pir.getShortcutInfo();
+        itemInfo.priority = 0;
+        CharSequence title = si.getShortLabel();
+        CharSequence shortLabel = si.getShortLabel();
+        if (!TextUtils.isEmpty(shortLabel)) {
+          title = shortLabel;
+        }
+        CharSequence longLabel = si.getLongLabel();
+        if (title == null && !TextUtils.isEmpty(longLabel)) {
+          title = longLabel;
+        }
+        if (title == null) {
+          title = "";
+        }
+        itemInfo.title = title;
+        itemInfo.shortcutIconResource = Intent.ShortcutIconResource.fromContext(this, R.mipmap.ic_launcher);
+        itemInfo.intent = new Intent(Intent.ACTION_MAIN);
+//                .addCategory(INTENT_CATEGORY)
       }
     }
 

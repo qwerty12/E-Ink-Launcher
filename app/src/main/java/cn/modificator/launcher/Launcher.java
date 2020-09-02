@@ -22,16 +22,23 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.fragment.app.FragmentActivity;
+
 import java.io.File;
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
 
 import cn.modificator.launcher.ftpservice.FTPReceiver;
 import cn.modificator.launcher.ftpservice.FTPService;
 import cn.modificator.launcher.model.AdminReceiver;
-import cn.modificator.launcher.model.AppDataCenter;
+import cn.modificator.launcher.model.ItemCenter;
 import cn.modificator.launcher.model.HomeEntranceService;
+import cn.modificator.launcher.model.LauncherItemInfo;
 import cn.modificator.launcher.model.WifiControl;
 import cn.modificator.launcher.widgets.BatteryView;
 import cn.modificator.launcher.widgets.EInkLauncherView;
@@ -39,23 +46,29 @@ import cn.modificator.launcher.widgets.EInkLauncherView;
 /**
  * Created by mod on 16-4-22.
  */
-public class Launcher extends Activity {
+public class Launcher extends FragmentActivity {
 
+  public static final String SHORTCUT_ITEMS_KEY = "shortcutItemsKey";
   public static final String ROW_NUM_KEY = "rowNumKey";
   public static final String COL_NUM_KEY = "colNumKey";
-  public static final String APP_NAME_SHOW_LINES = "appNameShowLines";
-  public static final String HIDE_APPS_KEY = "hideAppsKey";
-  public static final String DELETEAPP = "deleteApp";
-  public static final String LAUNCHER_SHOW_STATUS_BAR = "launcherShowStatusBar";
-  public static final String LAUNCHER_SHOW_CUSTOM_ICON= "launcherShowCustomIcon";
-  public static final String LAUNCHER_ACTION = "launcherReceiver";
-  public static final String LAUNCHER_FONT_SIZE = "launcherFontSize";
-  public static final String LAUNCHER_HIDE_DIVIDER = "launcherHideDivider";
+  public static final String SORT_FLAGS_KEY = "sortFlagsKey";
+  public static final String PRIORITY_KEY = "priorityKey";
+  public static final String ITEM_TITLE_LINES_KEY = "itemTitleShowLines";
+  public static final String HIDDEN_ITEM_IDS_KEY = "hiddenItemIds";
+  public static final String SHOW_STATUS_BAR_KEY = "showStatusBarKey";
+  public static final String SHOW_CUSTOM_ICON_KEY = "showCustomIconKey";
+  public static final String FONT_SIZE_KEY = "fontSizeKey";
+  public static final String HIDE_DIVIDER_KEY = "hideDividerKey";
+
+  public static final String DO_MANAGE_APP_KEY = "doManageAppKey";
+  public static final String DO_DELETE_SHORTCUT_KEY = "doDeleteShortcutKey";
+
+  public static final String LAUNCHER_ACTION = "cn.modificator.launcher.launcherAction";
 
   // TODO initialize isFirstRun
 
   EInkLauncherView launcherView;
-  AppDataCenter dataCenter = null;
+  ItemCenter itemCenter = null;
   Config config;
   LauncherUpdateReceiver updateReceiver;
   TextView pageStatus;
@@ -100,63 +113,73 @@ public class Launcher extends Activity {
     textClock = findViewById(R.id.textClock);
     (this.<ImageView>findViewById(R.id.toSetting)).setImageDrawable(Utils.tintDrawable(getResources().getDrawable(R.drawable.navibar_icon_settings_highlight), ColorStateList.valueOf(0xff000000)));
 
+    itemCenter = new ItemCenter(this, config);
+    itemCenter.setLauncherView(launcherView);
+    itemCenter.setTemporaryHiddenItemIds(config.getHiddenItemIds());
+    itemCenter.setTvPageStatus(pageStatus);
+    try {
+      itemCenter.setIsSystemApp(!isUserApp(getPackageManager().getPackageInfo(getPackageName(), 0)));
+    } catch (PackageManager.NameNotFoundException e) {
+      e.printStackTrace();
+    }
+
 //        launcherView.setIconReplaceFile(Arrays.asList(iconFile.list()));
-    launcherView.setHideAppPkg(config.getHideApps());
-    launcherView.setHideDivider(config.getDividerHideStatus());
+//    launcherView.setHideAppPkg(config.getHiddenItemIds());
+    launcherView.setShouldHideDivider(config.getDividerHideStatus());
     launcherView.setFontSize(config.getFontSize());
 
-    dataCenter = new AppDataCenter(this);
+
     // TODO loadAllApps
-    dataCenter.setHideApps(config.getHideApps());
-
-    dataCenter.setPageStatus(pageStatus);
-    dataCenter.setLauncherView(launcherView);
     //加载之前保存的桌面数据
-    updateColNum(config.getColNum());
-    updateRowNum(config.getRowNum());
+    config.getColNum();
+    config.getRowNum();
 
-    findViewById(R.id.lastPage).setOnClickListener(new View.OnClickListener() {
+    itemCenter.refresh(ItemCenter.REFRESH_LEVEL_0_ALL, EInkLauncherView.REFRESH_LEVEL_0_LAYOUT);
+
+    findViewById(R.id.previousPage).setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        dataCenter.showLastPage();
+        itemCenter.showPreviousPage();
       }
     });
     findViewById(R.id.nextPage).setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        dataCenter.showNextPage();
+        itemCenter.showNextPage();
       }
     });
     findViewById(R.id.toSetting).setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        getFragmentManager().beginTransaction()
-            .replace(android.R.id.content, new SettingFramgent())
-            .addToBackStack(null)
-            .commit();
+        SettingFragment sf = new SettingFragment();
+        sf.config = config;
+        sf.itemCenter = itemCenter;
+        getSupportFragmentManager().beginTransaction()
+                  .replace(android.R.id.content, sf)
+                  .addToBackStack(null)
+                  .commit();
       }
     });
     findViewById(R.id.deleteFinish).setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        launcherView.setDelete(false);
-        // TODO CompareMappsToHideAppsAndRemoveHideApps
-        dataCenter.refreshAppList();
-        config.setHideApps(dataCenter.getHideApps());
+        itemCenter.setInManagingState(false);
+        config.setHiddenItemIds(itemCenter.getTemporaryHiddenItemIds());
+        itemCenter.refresh(ItemCenter.REFRESH_LEVEL_0_ALL, EInkLauncherView.REFRESH_LEVEL_1_CURRENT_ITEMS);
         v.setVisibility(View.GONE);
       }
     });
-    launcherView.setTouchListener(new EInkLauncherView.TouchListener() {
-      @Override
-      public void toNext() {
-        dataCenter.showNextPage();
-      }
-
-      @Override
-      public void toLast() {
-        dataCenter.showLastPage();
-      }
-    });
+//    launcherView.setPageChanger(new EInkLauncherView.PageChanger() {
+//      @Override
+//      public void toNext() {
+//        itemCenter.showNextPage();
+//      }
+//
+//      @Override
+//      public void toPrevious() {
+//        itemCenter.showPreviousPage();
+//      }
+//    });
 //        android:format12Hour="yyyy-MM-dd aahh:mm EEEE"
 //        android:format24Hour="yyyy-MM-dd aahh:mm EEEE"
 
@@ -172,36 +195,33 @@ public class Launcher extends Activity {
 
     IntentFilter appChangeFilter = new IntentFilter();
     appChangeFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
+    appChangeFilter.addAction(Intent.ACTION_PACKAGE_CHANGED);
     appChangeFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
     appChangeFilter.addAction(Intent.ACTION_PACKAGE_REPLACED);
     appChangeFilter.addDataScheme("package");
-    registerReceiver(appChangeReceiver, appChangeFilter);
-
-    try {
-      launcherView.setSystemApp(!isUserApp(getPackageManager().getPackageInfo(getPackageName(), 0)));
-    } catch (PackageManager.NameNotFoundException e) {
-      e.printStackTrace();
-    }
+    registerReceiver(appChangedReceiver, appChangeFilter);
   }
 
   private void updateRowNum(int rowNum) {
-    launcherView.setRowNum(rowNum);
-    dataCenter.setRowNum(rowNum);
+//    launcherView.setRowNum(rowNum);
+//    itemCenter.setRowNum(rowNum);
     config.setRowNum(rowNum);
+    itemCenter.refresh(ItemCenter.REFRESH_LEVEL_3_PAGE, EInkLauncherView.REFRESH_LEVEL_0_LAYOUT);
   }
 
   private void updateColNum(int colNum) {
-    launcherView.setColNum(colNum);
-    dataCenter.setColNum(colNum);
+//    launcherView.setColNum(colNum);
+//    itemCenter.setColNum(colNum);
     config.setColNum(colNum);
+    itemCenter.refresh(ItemCenter.REFRESH_LEVEL_3_PAGE, EInkLauncherView.REFRESH_LEVEL_0_LAYOUT);
   }
 
   @Override
   public boolean onKeyUp(int keyCode, KeyEvent event) {
     if (keyCode == KeyEvent.KEYCODE_PAGE_UP) {
-      dataCenter.showLastPage();
+      itemCenter.showPreviousPage();
     } else if (keyCode == KeyEvent.KEYCODE_PAGE_DOWN) {
-      dataCenter.showNextPage();
+      itemCenter.showNextPage();
     } else if (keyCode == KeyEvent.KEYCODE_BACK) {
       return true;
     }
@@ -212,7 +232,7 @@ public class Launcher extends Activity {
   protected void onResume() {
     super.onResume();
     IntentFilter batteryLevelFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-    registerReceiver(batteryLevelRcvr, batteryLevelFilter);
+    registerReceiver(batteryLevelReceiver, batteryLevelFilter);
     timeListener = new BroadcastReceiver() {
       @Override
       public void onReceive(Context context, Intent intent) {
@@ -222,8 +242,10 @@ public class Launcher extends Activity {
     updateTimeShow();
 
     registerReceiver(timeListener, new IntentFilter(Intent.ACTION_TIME_TICK));
-    if (launcherView != null) launcherView.refreshReplaceIcon();
-    detectionUSB();
+    if (itemCenter != null && launcherView != null) {
+      itemCenter.refresh(ItemCenter.REFRESH_LEVEL_1_REPLACED_ICONS);
+    }
+    detectUSB();
 
     IntentFilter ftpIntentFilter = new IntentFilter(FTPService.ACTION_START_FTPSERVER);
     ftpIntentFilter.addAction(FTPService.ACTION_STOP_FTPSERVER);
@@ -258,7 +280,7 @@ public class Launcher extends Activity {
   @Override
   protected void onPause() {
     super.onPause();
-    unregisterReceiver(batteryLevelRcvr);
+    unregisterReceiver(batteryLevelReceiver);
     unregisterReceiver(timeListener);
     unregisterReceiver(usbReceiver);
     unregisterReceiver(ftpReceiver);
@@ -268,7 +290,7 @@ public class Launcher extends Activity {
   protected void onDestroy() {
     super.onDestroy();
     unregisterReceiver(updateReceiver);
-    unregisterReceiver(appChangeReceiver);
+    unregisterReceiver(appChangedReceiver);
     try {
       unregisterReceiver(usbReceiver);
     } catch (Throwable throwable) {
@@ -282,44 +304,68 @@ public class Launcher extends Activity {
     @Override
     public void onReceive(Context context, Intent intent) {
       Bundle bundle = intent.getExtras();
-      if (bundle.containsKey(ROW_NUM_KEY)) {
+      if (bundle.containsKey(SHORTCUT_ITEMS_KEY)) {
+        // TODO receive shortcut item
+        itemCenter.refresh(ItemCenter.REFRESH_LEVEL_0_ALL);
+      } else if (bundle.containsKey(ROW_NUM_KEY)) {
         updateRowNum(bundle.getInt(ROW_NUM_KEY));
       } else if (bundle.containsKey(COL_NUM_KEY)) {
         updateColNum(bundle.getInt(COL_NUM_KEY));
-      } else if (bundle.containsKey(DELETEAPP)) {
-        launcherView.setDelete(true);
-
-        //显示所有App
-        dataCenter.refreshAppList(true);
-        findViewById(R.id.deleteFinish).setVisibility(View.VISIBLE);
-      } else if (bundle.containsKey(LAUNCHER_FONT_SIZE)) {
-        launcherView.setFontSize(bundle.getFloat(LAUNCHER_FONT_SIZE));
-      } else if (bundle.containsKey(LAUNCHER_HIDE_DIVIDER)) {
-        launcherView.setHideDivider(bundle.getBoolean(LAUNCHER_HIDE_DIVIDER));
-        config.setDividerHideStatus(bundle.getBoolean(LAUNCHER_HIDE_DIVIDER));
-      }else if (bundle.containsKey(LAUNCHER_SHOW_STATUS_BAR)){
-        config.setStatusBarShowStatus(bundle.getBoolean(LAUNCHER_SHOW_STATUS_BAR));
+      } else if (bundle.containsKey(SORT_FLAGS_KEY)) {
+        int sortFlags = bundle.getInt(SORT_FLAGS_KEY);
+        config.setSortFlags(sortFlags);
+        itemCenter.refresh(ItemCenter.REFRESH_LEVEL_2_VISIBLE_SORT);
+      } else if (bundle.containsKey(PRIORITY_KEY)) {
+        config.setPriorityMap((Map<String, Integer>) bundle.getSerializable(PRIORITY_KEY));
+        itemCenter.refresh(ItemCenter.REFRESH_LEVEL_1_PRIORITIES);
+      } else if (bundle.containsKey(ITEM_TITLE_LINES_KEY)) {
+        int lines = bundle.getInt(ITEM_TITLE_LINES_KEY);
+        if (lines == 3) {
+          lines = Integer.MAX_VALUE;
+        }
+        config.setItemTitleLines(lines);
+        launcherView.refreshItemTitleLines();
+      } else if (bundle.containsKey(HIDDEN_ITEM_IDS_KEY)) {
+        itemCenter.refresh(ItemCenter.REFRESH_LEVEL_2_VISIBLE_SORT);
+      } else if (bundle.containsKey(SHOW_STATUS_BAR_KEY)) {
+        config.setStatusBarShowStatus(bundle.getBoolean(SHOW_STATUS_BAR_KEY));
         toggleStatusBar();
-      }else if (bundle.containsKey(LAUNCHER_SHOW_CUSTOM_ICON)){
-        config.setCustomIconShowStatus(bundle.getBoolean(LAUNCHER_SHOW_CUSTOM_ICON));
-        launcherView.refreshReplaceIcon();
-      }else if (bundle.containsKey(APP_NAME_SHOW_LINES)){
-        int lines = bundle.getInt(APP_NAME_SHOW_LINES);
-        if (lines==3)lines=Integer.MAX_VALUE;
-        config.setAppNameLines(lines);
-        launcherView.updateAppNameLines();
+      } else if (bundle.containsKey(SHOW_CUSTOM_ICON_KEY)) {
+        config.setCustomIconShowStatus(bundle.getBoolean(SHOW_CUSTOM_ICON_KEY));
+        itemCenter.refresh(ItemCenter.REFRESH_LEVEL_1_REPLACED_ICONS);
+      } else if (bundle.containsKey(FONT_SIZE_KEY)) {
+        launcherView.setFontSize(bundle.getFloat(FONT_SIZE_KEY));
+      } else if (bundle.containsKey(HIDE_DIVIDER_KEY)) {
+        launcherView.setShouldHideDivider(bundle.getBoolean(HIDE_DIVIDER_KEY));
+        config.setDividerHideStatus(bundle.getBoolean(HIDE_DIVIDER_KEY));
+      } else if (bundle.containsKey(DO_MANAGE_APP_KEY)) {
+        itemCenter.setInManagingState(true);
+        itemCenter.refresh(ItemCenter.REFRESH_LEVEL_0_ALL);
+        findViewById(R.id.deleteFinish).setVisibility(View.VISIBLE);
+      } else if (bundle.containsKey(DO_DELETE_SHORTCUT_KEY)) {
+        String shortcutItemId = bundle.getString(DO_DELETE_SHORTCUT_KEY);
+        ArrayList<LauncherItemInfo> copyOfAllItems = new ArrayList<LauncherItemInfo>();
+        copyOfAllItems.addAll(config.getShortcutItems());
+        Iterator<LauncherItemInfo> it = copyOfAllItems.iterator();
+        while (it.hasNext()) {
+          if (it.next().id.equals(shortcutItemId)) {
+            it.remove();
+          }
+        }
+        config.setShortcutItems(copyOfAllItems);
+        itemCenter.refresh(ItemCenter.REFRESH_LEVEL_0_ALL);
       }
     }
   }
 
-  BroadcastReceiver appChangeReceiver = new BroadcastReceiver() {
+  BroadcastReceiver appChangedReceiver = new BroadcastReceiver() {
     @Override
     public void onReceive(Context context, Intent intent) {
         // TODO loadAllApps CompareMappsToHideAppsAndRemoveHideApps
-      dataCenter.refreshAppList(launcherView.isDelete());
+      itemCenter.refresh(ItemCenter.REFRESH_LEVEL_0_ALL);
     }
   };
-  BroadcastReceiver batteryLevelRcvr = new BroadcastReceiver() {
+  BroadcastReceiver batteryLevelReceiver = new BroadcastReceiver() {
     @Override
     public void onReceive(Context context, Intent intent) {
       int rawlevel = intent.getIntExtra("level", -1);
@@ -379,7 +425,7 @@ public class Launcher extends Activity {
     }
   };
 
-  private void detectionUSB() {
+  private void detectUSB() {
     IntentFilter usbFilter = new IntentFilter();
     usbFilter.addAction(Intent.ACTION_UMS_DISCONNECTED);
     usbFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
@@ -398,14 +444,14 @@ public class Launcher extends Activity {
         //设备卸载成功;
       } else if (action.equals(Intent.ACTION_MEDIA_MOUNTED)) {
         //设备挂载成功
-        launcherView.refreshReplaceIcon();
+        itemCenter.refresh(ItemCenter.REFRESH_LEVEL_1_REPLACED_ICONS);
       }
     }
   };
 
   @Override
   public void onBackPressed() {
-    if (getFragmentManager().getBackStackEntryCount() > 0) {
+    if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
       super.onBackPressed();
       config.saveFontSize();
     }
@@ -460,7 +506,7 @@ public class Launcher extends Activity {
 
   public void toggleStatusBar(){
     int windowFlags= WindowManager.LayoutParams.FLAG_FULLSCREEN;
-    if (Config.showStatusBar){
+    if (config.showStatusBar){
       getWindow().setFlags(windowFlags,windowFlags);
     }else{
       getWindow().clearFlags(windowFlags);
