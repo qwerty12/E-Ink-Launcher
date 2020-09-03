@@ -77,10 +77,10 @@
     <string name="no_apps_to_open">无法找到可以打开此文件的应用</string>
     <string name="type_other">其他</string>
     <string name="start_path_name">设备</string>
-    <string name="dialog_shortcut_id">标题：%s\nID：%s\n（可以选中复制）</string>
+    <string name="dialog_shortcut_id">标题：\n  %1$s\nID：\n  %2$s\n（可以选中复制）</string>
     <string name="sort_title">自定义排序</string>
     <string name="sort_description">请为每一项指定一个整数优先级（在 Custom+ 排序模式下将会降序排序）。新项目会自动指定优先级为 0。</string>
-    <string name="sort_input_priority_hint">you\'xian\'ji</string>
+    <string name="sort_input_priority_hint">优先级</string>
     <string name="sort_method">排序</string>
     <string name="setting_sort">自定义排序</string>
     <string name="title_activity_sort">排序</string>

@@ -45,7 +45,7 @@
     <string name="dialog_hide">Hide</string>
     <string name="dialog_uninstall">Uninstall</string>
     <string name="dialog_pkg_name">Package Name: %s (You can copy and select it)</string>
-    <string name="dialog_shortcut_id">Name: %s\nId: %s\n(You can copy and select its ID)</string>
+    <string name="dialog_shortcut_id">Name:\n  %1$s\nId:\n  %2$s\n(You can copy and select its ID)</string>
     <string name="dialog_close">Close</string>
     <string name="dialog_confim">Confirm</string>
 
