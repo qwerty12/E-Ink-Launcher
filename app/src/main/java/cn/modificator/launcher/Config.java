@@ -2,6 +2,10 @@ package cn.modificator.launcher;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
+import android.view.Display;
+import android.view.WindowManager;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -39,7 +43,14 @@ public class Config {
   private Set<String> hiddenItemIds = new HashSet<>();
   private List<LauncherItemInfo> shortcutItems;
   private HashMap<String, Integer> priorityMap;
-  public Gson gson;
+  public static Gson gson;
+
+  static {
+    GsonBuilder gsonBuilder = new GsonBuilder();
+    gsonBuilder.registerTypeAdapter(LauncherItemInfo.class, new LauncherItemInfoSerializer());
+    gsonBuilder.registerTypeAdapter(LauncherItemInfo.class, new LauncherItemInfoDeserializer());
+    gson = gsonBuilder.create();
+  }
 
   public Config(Context context) {
     this.context = context;
@@ -47,11 +58,33 @@ public class Config {
     getDividerHideStatus();
     getStatusBarShowStatus();
     getItemTitleLines();
+  }
 
-    GsonBuilder gsonBuilder = new GsonBuilder();
-    gsonBuilder.registerTypeAdapter(LauncherItemInfo.class, new LauncherItemInfoSerializer());
-    gsonBuilder.registerTypeAdapter(LauncherItemInfo.class, new LauncherItemInfoDeserializer());
-    gson = gsonBuilder.create();
+  public static int getIconDensity(int requiredSize) {
+    int[] densityBuckets = new int[] {
+            DisplayMetrics.DENSITY_LOW,
+            DisplayMetrics.DENSITY_MEDIUM,
+            DisplayMetrics.DENSITY_TV,
+            DisplayMetrics.DENSITY_HIGH,
+            DisplayMetrics.DENSITY_XHIGH,
+            DisplayMetrics.DENSITY_XXHIGH,
+            DisplayMetrics.DENSITY_XXXHIGH
+    };
+
+    int density = DisplayMetrics.DENSITY_XXXHIGH;
+    for (int i = densityBuckets.length - 1; i >= 0; i--) {
+      float expectedSize = 48f * densityBuckets[i]
+              / DisplayMetrics.DENSITY_DEFAULT;
+      if (expectedSize >= requiredSize) {
+        density = densityBuckets[i];
+      }
+    }
+
+    return density;
+  }
+
+  public static int getIconPxSize(Context context) {
+    return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200, context.getResources().getDisplayMetrics()));
   }
 
   public Map<String, Integer> getPriorityMap() {

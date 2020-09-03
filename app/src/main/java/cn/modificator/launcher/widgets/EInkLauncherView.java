@@ -239,6 +239,8 @@ public class EInkLauncherView extends ViewGroup{
           });
           itemView.setVisibility(VISIBLE);
           itemView.setAlpha(1);
+        } else if (position >= getChildCount()) {
+          Log.e("launcherView", "position >= getChildCount() detected!");
         } else if (position >= itemInfoList.size()) {
           ((TextView) itemView.findViewById(R.id.itemTitle)).setText("");
           ((ImageView) itemView.findViewById(R.id.itemIcon)).setImageDrawable(null);
@@ -246,8 +248,6 @@ public class EInkLauncherView extends ViewGroup{
           //          itemView.setClickable(false);
           //          itemView.setVisibility(GONE);
           itemView.setAlpha(0);
-        } else {
-          Log.e("launcherView", "position >= getChildCount() detected!");
         }
       }
     }

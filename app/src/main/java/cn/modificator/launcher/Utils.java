@@ -5,6 +5,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.graphics.drawable.AdaptiveIconDrawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 
@@ -23,6 +28,50 @@ import java.util.List;
  * Created by mod on 16-5-6.
  */
 public class Utils {
+
+  public static Bitmap createBitmapFromDrawable(Drawable drawable, int size, Context context) {
+    Canvas canvas = new Canvas();
+    Rect oldBounds = new Rect();
+    Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
+    if (drawable == null) {
+      return bitmap;
+    }
+    canvas.setBitmap(bitmap);
+    oldBounds.set(drawable.getBounds());
+
+    if (drawable instanceof BitmapDrawable) {
+      BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+      Bitmap b = bitmapDrawable.getBitmap();
+      if (bitmap != null && b.getDensity() == Bitmap.DENSITY_NONE) {
+        bitmapDrawable.setTargetDensity(context.getResources().getDisplayMetrics());
+      }
+    }
+    int width = size;
+    int height = size;
+
+    int intrinsicWidth = drawable.getIntrinsicWidth();
+    int intrinsicHeight = drawable.getIntrinsicHeight();
+    if (intrinsicWidth > 0 && intrinsicHeight > 0) {
+      // Scale the icon proportionally to the icon dimensions
+      final float ratio = (float) intrinsicWidth / intrinsicHeight;
+      if (intrinsicWidth > intrinsicHeight) {
+        height = (int) (width / ratio);
+      } else if (intrinsicHeight > intrinsicWidth) {
+        width = (int) (height * ratio);
+      }
+    }
+    final int left = (size - width) / 2;
+    final int top = (size - height) / 2;
+    drawable.setBounds(left, top, left + width, top + height);
+    canvas.save();
+    // canvas.scale(scale, scale, size / 2, size / 2);
+    drawable.draw(canvas);
+    canvas.restore();
+
+    drawable.setBounds(oldBounds);
+    canvas.setBitmap(null);
+    return bitmap;
+  }
 
   public static Drawable tintDrawable(Drawable drawable, ColorStateList colors) {
     final Drawable wrappedDrawable = DrawableCompat.wrap(drawable);

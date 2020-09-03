@@ -110,17 +110,20 @@ public class ItemCenter {
           WifiControl.onClickWifiItem();
         }
         break;
-      default:
+      case LauncherItemInfo.TYPE_LAUNCHER_ACTIVITY:
         context.startActivity(itemInfo.intent);
+        break;
+      case LauncherItemInfo.TYPE_SHORTCUT:
+        itemInfo.executeShortcut(context);
+        break;
     }
   }
 
   public void executeItemOnLongClick(final Context context, final LauncherItemInfo itemInfo) {
     switch (itemInfo.type) {
       case LauncherItemInfo.TYPE_SPECIAL:
-        if (!isSystemApp) return;
-
         if (itemInfo.id.equals(ONE_KEY_LOCK_ITEM_ID)) {
+          if (!isSystemApp) return;
           new AlertDialog.Builder(context)
                   .setTitle(R.string.power_title)
                   .setItems(R.array.power_menu, new DialogInterface.OnClickListener() {
@@ -152,7 +155,7 @@ public class ItemCenter {
       }
       break;
     case LauncherItemInfo.TYPE_LAUNCHER_ACTIVITY:
-      new AlertDialog.Builder(context)
+      AlertDialog dialog1 = new AlertDialog.Builder(context)
               .setIcon(itemInfo.drawable) // TODO: show replaced icon here?
               .setTitle(itemInfo.title)
               .setMessage(context.getResources().getString(R.string.dialog_pkg_name, itemInfo.packageName))
@@ -172,9 +175,16 @@ public class ItemCenter {
                 }
               })
               .show();
+      try {
+        TextView textView = (TextView) dialog1.getWindow().getDecorView().findViewById(android.R.id.message);
+        textView.setTextIsSelectable(true);
+      }
+      catch(Exception e) {
+        e.printStackTrace();
+      }
       break;
     case LauncherItemInfo.TYPE_SHORTCUT:
-      new AlertDialog.Builder(context)
+      AlertDialog dialog2 = new AlertDialog.Builder(context)
               .setIcon( itemInfo.drawable) // TODO: show replaced icon here?
               .setTitle(itemInfo.title)
               .setMessage(context.getResources().getString(R.string.dialog_shortcut_id, itemInfo.title, itemInfo.id))
@@ -182,20 +192,30 @@ public class ItemCenter {
               .setNeutralButton(R.string.dialog_hide, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                  Intent intent = new Intent();
-                  intent.putExtra(Launcher.DO_DELETE_SHORTCUT_KEY, itemInfo.id);
-                  intent.setAction(Launcher.LAUNCHER_ACTION);
-                  mContext.sendBroadcast(intent);
+                  mTemporaryHiddenItemIds.add(itemInfo.id);
+                  refresh(REFRESH_LEVEL_0_ALL);
                 }
               })
-              .show();
+              .setNegativeButton(R.string.dialog_remove, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                  deleteItem(context, itemInfo);
+                }
+              }).show();
+      try {
+        TextView textView = (TextView) dialog2.getWindow().getDecorView().findViewById(android.R.id.message);
+        textView.setTextIsSelectable(true);
+      }
+      catch(Exception e) {
+        e.printStackTrace();
+      }
       break;
     default:
       throw new IllegalArgumentException();
     }
   }
 
-  public void deleteItem(Context context, LauncherItemInfo itemInfo) {
+  public void deleteItem(final Context context, final LauncherItemInfo itemInfo) {
     switch (itemInfo.type) {
       case LauncherItemInfo.TYPE_SPECIAL:
         break;
@@ -204,10 +224,21 @@ public class ItemCenter {
         context.startActivity(deleteIntent);
         break;
       case LauncherItemInfo.TYPE_SHORTCUT:
-        Intent intent = new Intent();
-        intent.putExtra(Launcher.DO_DELETE_SHORTCUT_KEY, itemInfo.id);
-        intent.setAction(Launcher.LAUNCHER_ACTION);
-        mContext.sendBroadcast(intent);
+        new AlertDialog.Builder(context)
+                .setIcon(itemInfo.drawable)
+                .setTitle(context.getString(R.string.delete_shortcut_title, itemInfo.title))
+                .setMessage(context.getResources().getString(R.string.delete_shortcut_message, itemInfo.title))
+                .setPositiveButton(R.string.dialog_cancel, null)
+                .setNegativeButton(R.string.dialog_remove, new DialogInterface.OnClickListener() {
+                  @Override
+                  public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent();
+                    intent.putExtra(Launcher.DO_DELETE_SHORTCUT_KEY, itemInfo.id);
+                    intent.setAction(Launcher.LAUNCHER_ACTION);
+                    mContext.sendBroadcast(intent);
+                  }
+                })
+                .show();
         break;
       default:
         throw new IllegalArgumentException();
@@ -271,11 +302,13 @@ public class ItemCenter {
       newItemInfo.id = newItemInfo.componentName.flattenToString();
       newItemInfo.packageName = r.activityInfo.packageName;
       newItemInfo.title = r.loadLabel(packageManager);
-      newItemInfo.drawable = r.loadIcon(packageManager);
       newItemInfo.intent = new Intent()
               .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
               .addCategory(Intent.CATEGORY_LAUNCHER)
               .setComponent(newItemInfo.componentName);
+
+      newItemInfo.loadDrawable(r, packageManager);
+
       mAllItems.add(newItemInfo);
     }
 
@@ -283,6 +316,7 @@ public class ItemCenter {
       LauncherItemInfo newItemInfo;
       try {
         newItemInfo = (LauncherItemInfo) shortcutItemInfo.clone();
+        newItemInfo.loadDrawable(null, packageManager);
         mAllItems.add(newItemInfo);
       } catch (CloneNotSupportedException e) {
         e.printStackTrace();
@@ -300,7 +334,7 @@ public class ItemCenter {
     HashMap<String, File> replacements = new HashMap<>();
 
     if (mContext.getExternalCacheDir() == null) return;
-    if (!config.showCustomIcon) {
+    if (config.showCustomIcon) {
       File iconFileRoot = new File(mContext.getExternalCacheDir().getParentFile().getParentFile().getParentFile().getParentFile(), "E-Ink Launcher" + File.separator + "icon");
       if (iconFileRoot.listFiles() == null) return;
       for (File file : iconFileRoot.listFiles()) {

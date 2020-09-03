@@ -49,6 +49,7 @@ import cn.modificator.launcher.widgets.EInkLauncherView;
 public class Launcher extends FragmentActivity {
 
   public static final String SHORTCUT_ITEMS_KEY = "shortcutItemsKey";
+  public static final String SHORTCUT_ITEM_KEY = "shortcutItemKey";
   public static final String ROW_NUM_KEY = "rowNumKey";
   public static final String COL_NUM_KEY = "colNumKey";
   public static final String SORT_FLAGS_KEY = "sortFlagsKey";
@@ -304,8 +305,13 @@ public class Launcher extends FragmentActivity {
     @Override
     public void onReceive(Context context, Intent intent) {
       Bundle bundle = intent.getExtras();
-      if (bundle.containsKey(SHORTCUT_ITEMS_KEY)) {
-        // TODO receive shortcut item
+      if (bundle.containsKey(SHORTCUT_ITEM_KEY)) {
+        LauncherItemInfo itemInfo = Config.gson.fromJson(bundle.getString(SHORTCUT_ITEM_KEY),
+                LauncherItemInfo.class);
+        ArrayList<LauncherItemInfo> shortcuts = new ArrayList<>();
+        shortcuts.addAll(config.getShortcutItems());
+        shortcuts.add(itemInfo);
+        config.setShortcutItems(shortcuts);
         itemCenter.refresh(ItemCenter.REFRESH_LEVEL_0_ALL);
       } else if (bundle.containsKey(ROW_NUM_KEY)) {
         updateRowNum(bundle.getInt(ROW_NUM_KEY));

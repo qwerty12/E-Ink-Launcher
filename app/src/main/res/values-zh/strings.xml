@@ -24,29 +24,29 @@
     <string name="setting_set_font_size">设置字体大小</string>
     <string name="setting_apps_manager">管理应用</string>
     <string name="setting_column_icons">每列图标</string>
-    <string name="toast_need_wifi_connnect">大哥诶，麻烦先把WIFI连上吧</string>
+    <string name="toast_need_wifi_connnect">大哥诶，麻烦先把Wi-Fi连上吧</string>
     <string name="setting_row_icons">每行图标</string>
     <string name="battery_heat">电池过热</string>
     <string name="battery_unknown">电池呢？</string>
     <string name="battery_charging">充电中</string>
     <string name="battery_low">电量低</string>
     <string name="battery_full">充满了</string>
-    <string name="battery_wtf" translatable="false">WTF?</string>
+    <string name="battery_wtf">WTF?</string>
 
     <string name="dialog_cancel">取消</string>
     <string name="dialog_hide">隐藏</string>
     <string name="dialog_uninstall">卸载</string>
-    <string name="dialog_pkg_name">包名: %s</string>
+    <string name="dialog_pkg_name">包名: %s （可以选中复制）</string>
     <string name="dialog_close">关闭</string>
 
-    <string name="wifi_status_off">WiFi 已关闭</string>
-    <string name="wifi_status_closing">WiFi 正在关闭</string>
-    <string name="wifi_status_opening">WiFi 正在开启</string>
-    <string name="wifi_status_on">WiFi 已开启</string>
-    <string name="wifi_status_connected">WiFi 已连接:%s</string>
-    <string name="wifi_status_connecting">WiFi 连接中</string>
-    <string name="wifi_status_disconnected">WiFi 已断开</string>
-    <string name="wifi_status_disconnecting">WiFi 断开中</string>
+    <string name="wifi_status_off">Wi-Fi 已关闭</string>
+    <string name="wifi_status_closing">Wi-Fi 正在关闭</string>
+    <string name="wifi_status_opening">Wi-Fi 正在开启</string>
+    <string name="wifi_status_on">Wi-Fi 已开启</string>
+    <string name="wifi_status_connected">Wi-Fi 已连接:%s</string>
+    <string name="wifi_status_connecting">Wi-Fi 连接中</string>
+    <string name="wifi_status_disconnected">Wi-Fi 已断开</string>
+    <string name="wifi_status_disconnecting">Wi-Fi 断开中</string>
 
     <string name="item_lockscreen">一键锁屏</string>
 
@@ -56,7 +56,7 @@
     </string-array>
     <string name="setting_cloud_manager_on">网络传书 （开）</string>
     <string name="setting_cloud_manager_off">网络传书 （关）</string>
-    <string name="setting_cloud_manager_wifi_off">网络传书 （请连接WIFI）</string>
+    <string name="setting_cloud_manager_wifi_off">网络传书 （请连接Wi-Fi）</string>
     <string name="setting_help_and_about">帮助 &amp; 关于</string>
     <string name="path">路径</string>
     <string name="default_path_setting">设置默认路径</string>
@@ -65,15 +65,32 @@
     <string name="exit">退出</string>
     <string name="delete">删除</string>
     <string name="app_manager_finish">完成</string>
-    <string name="power_title" translatable="false">现在可以操作电源了哦~</string>
+    <string name="power_title">现在可以操作电源了哦~</string>
     <string name="battery_status_low_battery">电量低</string>
     <string name="show_custom_icon">显示自定义图标</string>
     <string name="show_statusbar">显示状态栏</string>
-    <string name="show_wifi_name">显示WiFi名字</string>
+    <string name="show_wifi_name">显示Wi-Fi名字</string>
     <string name="notification_click_back_launcher">点击这里回到桌面</string>
-    <string name="item_title_display">App 名字</string>
+    <string name="item_title_display">项目名字</string>
     <string name="dev_admin_desc">E-Ink Launcher 获取锁屏权限</string>
     <string name="choose_app_title">打开方式</string>
     <string name="no_apps_to_open">无法找到可以打开此文件的应用</string>
     <string name="type_other">其他</string>
+    <string name="start_path_name">设备</string>
+    <string name="dialog_shortcut_id">标题：%s\nID：%s\n（可以选中复制）</string>
+    <string name="sort_title">自定义排序</string>
+    <string name="sort_description">请为每一项指定一个整数优先级（在 Custom+ 排序模式下将会降序排序）。新项目会自动指定优先级为 0。</string>
+    <string name="sort_input_priority_hint">you\'xian\'ji</string>
+    <string name="sort_method">排序</string>
+    <string name="setting_sort">自定义排序</string>
+    <string name="title_activity_sort">排序</string>
+    <string name="create_shortcut_title">创建快捷方式</string>
+    <string name="create_shortcut_message">为该快捷方式输入标题</string>
+    <string name="shortcut_need_o">你需要 Android O 以上版本来运行此快捷方式。</string>
+    <string name="shortcut_data_loss">快捷方式数据损坏。</string>
+    <string name="shortcut_not_found">未在系统中找到快捷方式。</string>
+    <string name="dialog_remove">移除</string>
+    <string name="delete_shortcut_title">移除 %s</string>
+    <string name="delete_shortcut_message">你确定要移除 \"%s\" 吗？</string>
+    <string name="restart_launcher">重设桌面</string>
 </resources>

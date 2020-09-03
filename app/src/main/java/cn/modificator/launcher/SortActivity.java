@@ -50,12 +50,7 @@ public class SortActivity extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_sort);
 
-    GsonBuilder gsonBuilder = new GsonBuilder();
-    gsonBuilder.registerTypeAdapter(LauncherItemInfo.class, new LauncherItemInfoSerializer());
-    gsonBuilder.registerTypeAdapter(LauncherItemInfo.class, new LauncherItemInfoDeserializer());
-    Gson gson = gsonBuilder.create();
-
-    mAllItems = gson.fromJson(getIntent().getStringExtra(ALL_ITEMS_WITH_PRIORITY_KEY), new TypeToken<ArrayList<LauncherItemInfo>>() {}.getType());
+    mAllItems = Config.gson.fromJson(getIntent().getStringExtra(ALL_ITEMS_WITH_PRIORITY_KEY), new TypeToken<ArrayList<LauncherItemInfo>>() {}.getType());
 
     Collections.sort(mAllItems, new LauncherItemInfoComparator(
             LauncherItemInfoComparator.SORT_MODE_CUSTOM_WITH_FIRST_APPEAR
@@ -69,12 +64,7 @@ public class SortActivity extends Activity {
         it.remove();
         continue;
       }
-      if (itemInfo.type == LauncherItemInfo.TYPE_LAUNCHER_ACTIVITY) {
-        Intent intent = new Intent();
-        intent.setComponent(itemInfo.componentName);
-        ResolveInfo resolveInfo = pm.resolveActivity(intent, 0);
-        itemInfo.drawable = resolveInfo.loadIcon(pm);
-      }
+      itemInfo.loadDrawable(null, pm);
     }
 
     AutoFitRecyclerView recyclerView = findViewById(R.id.sort_recycler_view);

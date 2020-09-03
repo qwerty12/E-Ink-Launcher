@@ -11,6 +11,9 @@ android {
 //            storeFile release.storeFile
 //            storePassword release.storePassword
 //        }
+        debug {
+            storeFile file("../debug.keystore")
+        }
     }
     compileSdkVersion 29
     buildToolsVersion '29.0.3'
@@ -29,7 +32,7 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            // signingConfig signingConfigs.config
+            signingConfig signingConfigs.debug
         }
         debug {
             debuggable true
@@ -37,7 +40,7 @@ android {
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            // signingConfig signingConfigs.config
+            signingConfig signingConfigs.debug
         }
     }
     lintOptions {

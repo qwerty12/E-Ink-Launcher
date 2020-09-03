@@ -2,7 +2,9 @@ package cn.modificator.launcher.model;
 
 import android.content.ComponentName;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.util.Base64;
 import android.util.Log;
 
 import com.google.gson.JsonDeserializationContext;
@@ -62,12 +64,12 @@ public class LauncherItemInfoDeserializer implements JsonDeserializer<LauncherIt
       result.description = descriptionElement.getAsString();
     }
 
-    JsonElement shortIconResourcePackageNameElement = jsonObject.get("shortIconResourcePackageName");
-    JsonElement shortIconResourceResourceNameElement = jsonObject.get("shortIconResourceResourceName");
-    if (shortIconResourcePackageNameElement != null && shortIconResourceResourceNameElement != null && !shortIconResourcePackageNameElement.isJsonNull() && !shortIconResourceResourceNameElement.isJsonNull()) {
-      result.shortcutIconResource = new Intent.ShortcutIconResource();
-      result.shortcutIconResource.packageName = shortIconResourcePackageNameElement.getAsString();
-      result.shortcutIconResource.resourceName = shortIconResourceResourceNameElement.getAsString();
+    JsonElement bitmapElement = jsonObject.get("bitmap");
+    if (bitmapElement != null && !bitmapElement.isJsonNull()) {
+      String encoded = bitmapElement.getAsString();
+      byte[] decoded = Base64.decode(encoded, Base64.DEFAULT);
+
+      result.bitmap = BitmapFactory.decodeByteArray(decoded, 0, decoded.length);
     }
 
     JsonElement replacementIconUriElement = jsonObject.get("replacementIconUri");
@@ -78,6 +80,11 @@ public class LauncherItemInfoDeserializer implements JsonDeserializer<LauncherIt
     JsonElement firstAppearTimeElement = jsonObject.get("firstAppearTime");
     if (firstAppearTimeElement != null && !firstAppearTimeElement.isJsonNull()) {
       result.firstAppearTime = firstAppearTimeElement.getAsLong();
+    }
+
+    JsonElement shortcutIdElement = jsonObject.get("shortcutId");
+    if (shortcutIdElement != null && !shortcutIdElement.isJsonNull()) {
+      result.shortcutId = shortcutIdElement.getAsString();
     }
 
     return result;

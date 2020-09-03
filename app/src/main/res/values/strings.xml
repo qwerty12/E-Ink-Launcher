@@ -3,7 +3,7 @@
     <string name="file_manager">File Manager</string>
 
     <string name="empty_directory_hint">Empty directory</string>
-    <string name="start_path_name" translatable="false">Device</string>
+    <string name="start_path_name">Device</string>
     <string name="type_archive">Archive</string>
     <string name="type_certificate">Certificate</string>
     <string name="type_directory">Directory</string>
@@ -21,7 +21,7 @@
 
     <string name="setting_cloud_manager_on">Cloud Manager - ON</string>
     <string name="setting_cloud_manager_off">Cloud Manager - OFF</string>
-    <string name="setting_cloud_manager_wifi_off">Cloud Manager\n -- No WIFI connect</string>
+    <string name="setting_cloud_manager_wifi_off">Cloud Manager\n -- No Wi-Fi connect</string>
     <string name="battery_status_low_battery">Low power</string>
     <string name="setting_show_divider">Show Divider</string>
     <string name="setting_hide_divider">Hide Divider</string>
@@ -31,7 +31,7 @@
     <string name="setting_row_icons">"   Row   "</string>
     <string name="setting_help_and_about">Help &amp; About</string>
 
-    <string name="toast_need_wifi_connnect">Please connect WiFi!</string>
+    <string name="toast_need_wifi_connnect">Please connect Wi-Fi!</string>
 
     <string name="app_manager_finish">Done</string>
     <string name="battery_heat">Battery Overheat</string>
@@ -39,21 +39,21 @@
     <string name="battery_charging">Charging</string>
     <string name="battery_low">Low Battery</string>
     <string name="battery_full">Full</string>
-    <string name="battery_wtf" translatable="false">WTF?</string>
+    <string name="battery_wtf">WTF?</string>
 
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_hide">Hide</string>
     <string name="dialog_uninstall">Uninstall</string>
-    <string name="dialog_pkg_name">Package Name: %s</string>
-    <string name="dialog_shortcut_id">Name: %s\nId: %s</string>
+    <string name="dialog_pkg_name">Package Name: %s (You can copy and select it)</string>
+    <string name="dialog_shortcut_id">Name: %s\nId: %s\n(You can copy and select its ID)</string>
     <string name="dialog_close">Close</string>
     <string name="dialog_confim">Confirm</string>
 
-    <string name="wifi_status_off">WiFi OFF</string>
-    <string name="wifi_status_closing">WiFi closing</string>
-    <string name="wifi_status_opening">WiFi opening</string>
-    <string name="wifi_status_on">WiFi ON</string>
-    <string name="wifi_status_connected">WiFi connected:%s</string>
+    <string name="wifi_status_off">Wi-Fi OFF</string>
+    <string name="wifi_status_closing">Wi-Fi closing</string>
+    <string name="wifi_status_opening">Wi-Fi opening</string>
+    <string name="wifi_status_on">Wi-Fi ON</string>
+    <string name="wifi_status_connected">Wi-Fi connected:%s</string>
     <string name="wifi_status_connecting">WiFi connecting</string>
     <string name="wifi_status_disconnected">WiFi disconnected</string>
     <string name="wifi_status_disconnecting">WiFi disconnecting</string>
@@ -78,10 +78,10 @@
     <string name="exit">Exit</string>
     <string name="delete">Delete</string>
     <string name="show_statusbar">Show StatusBar</string>
-    <string name="show_wifi_name">Show Wifi Name</string>
+    <string name="show_wifi_name">Show Wi-Fi Name</string>
     <string name="show_custom_icon">Show custom icon</string>
     <string name="notification_click_back_launcher">Click here, back to Launcher</string>
-    <string name="item_title_display">App name</string>
+    <string name="item_title_display">Item Name</string>
 
     <string name="dev_admin_desc">E-Ink Launcher getting lock screen permissions</string>
     <!-- E-Ink Launcher 获取锁屏权限 -->
@@ -123,9 +123,17 @@ Thanks.
 ーーーーーーーーーーーーーーーーーーーー
 </string>
     <string name="sort_title">Custom Sort</string>
-    <string name="sort_description">Specify an integer as priority(sorted in descending order when mode is +) for each app. New app will be automatically specified 0.</string>
-    <string name="sort_input_priority_hint">Input priority for this app</string>
+    <string name="sort_description">Specify an integer as priority(sorted in descending order when mode is Custom+) for each app. New item will be automatically specified 0.</string>
+    <string name="sort_input_priority_hint">priority</string>
     <string name="sort_method">Sort</string>
     <string name="setting_sort">Custom Sort</string>
     <string name="title_activity_sort">Sort</string>
+    <string name="create_shortcut_title">Create Shortcut</string>
+    <string name="create_shortcut_message">Input title for this shortcut</string>
+    <string name="shortcut_need_o">You need at least Android O to run this shortcut.</string>
+    <string name="shortcut_data_loss">The data of this shortcut has been corrupted.</string>
+    <string name="shortcut_not_found">This shortcut is not found in system. Maybe it\'s no longer available.</string>
+    <string name="dialog_remove">Remove</string>
+    <string name="delete_shortcut_title">Remove %s</string>
+    <string name="delete_shortcut_message">Are you sure to remove \"%s\"?</string>
 </resources>

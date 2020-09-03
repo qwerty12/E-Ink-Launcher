@@ -2,7 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="130dp">
+    android:layout_height="200dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -24,18 +24,21 @@
             android:scaleType="fitCenter"/>
 
         <TextView
+            app:layout_constraintVertical_chainStyle="packed"
             android:id="@+id/sort_item_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:text="TextView"
+            android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@+id/sort_item_priority_input"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
+
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            android:textSize="16sp"
-            android:gravity="center"
-            app:layout_constraintTop_toBottomOf="@+id/sort_item_icon" />
+            app:layout_constraintVertical_bias="0.95"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <EditText
             android:hint="@string/sort_input_priority_hint"

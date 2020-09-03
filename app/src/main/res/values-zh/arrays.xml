@@ -28,4 +28,12 @@
         <item>两行</item>
         <item>不限制</item>
     </string-array>
+    <string-array name="sort_method">
+        <item>拼音字母+</item>
+        <item>拼音字母-</item>
+        <item>安装时间+</item>
+        <item>安装时间-</item>
+        <item>自定义+</item>
+        <item>自定义-</item>
+    </string-array>
 </resources>
