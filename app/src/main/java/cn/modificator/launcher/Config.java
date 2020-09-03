@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
-import android.view.Display;
-import android.view.WindowManager;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -19,10 +17,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import cn.modificator.launcher.model.LauncherItemInfo;
-import cn.modificator.launcher.model.LauncherItemInfoComparator;
-import cn.modificator.launcher.model.LauncherItemInfoDeserializer;
-import cn.modificator.launcher.model.LauncherItemInfoSerializer;
+import cn.modificator.launcher.modelController.LauncherItemInfo;
+import cn.modificator.launcher.modelController.LauncherItemInfoComparator;
+import cn.modificator.launcher.modelController.LauncherItemInfoDeserializer;
+import cn.modificator.launcher.modelController.LauncherItemInfoSerializer;
 
 /**
  * Created by mod on 16-4-23.

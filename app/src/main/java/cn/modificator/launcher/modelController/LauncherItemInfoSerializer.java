@@ -1,4 +1,4 @@
-package cn.modificator.launcher.model;
+package cn.modificator.launcher.modelController;
 
 import android.graphics.Bitmap;
 import android.util.Base64;

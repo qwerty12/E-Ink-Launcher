@@ -1,4 +1,4 @@
-package cn.modificator.launcher.model;
+package cn.modificator.launcher.modelController;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

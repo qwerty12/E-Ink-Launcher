@@ -21,10 +21,10 @@ import java.util.List;
 import java.util.Observer;
 
 import cn.modificator.launcher.R;
-import cn.modificator.launcher.model.ItemCenter;
-import cn.modificator.launcher.model.LauncherItemInfo;
-import cn.modificator.launcher.model.ObservableFloat;
-import cn.modificator.launcher.model.WifiControl;
+import cn.modificator.launcher.modelController.ItemCenter;
+import cn.modificator.launcher.modelController.LauncherItemInfo;
+import cn.modificator.launcher.modelController.ObservableFloat;
+import cn.modificator.launcher.modelController.WifiControl;
 
 import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
@@ -34,20 +34,12 @@ import static android.view.View.MeasureSpec.makeMeasureSpec;
  */
 public class EInkLauncherView extends ViewGroup{
 
-//  int rowNum = 5;
-//  int colNum = 5;
   float dragDistance = 0;
-  // TODO: type -> ComparableResolveInfo
   private List<LauncherItemInfo> itemInfoList = new ArrayList<>();
-//  PageChanger pageChanger;
   float fontSize = 14;
   ObservableFloat observable = new ObservableFloat();
-  // boolean isSystemApp = false;
   ItemCenter itemCenter;
-  // List<File> iconReplaceFile = new ArrayList<>();
-  // List<String> iconReplacePkg = new ArrayList<>();
   boolean shouldHideDivider = false;
-//    GestureDetector gestureDetector;
 
   public static final int REFRESH_LEVEL_0_LAYOUT = 0;
   public static final int REFRESH_LEVEL_1_CURRENT_ITEMS = 10;
@@ -72,46 +64,14 @@ public class EInkLauncherView extends ViewGroup{
     this.itemCenter = itemCenter;
   }
 
-  //  public void setHideAppPkg(Set<String> hideAppPkg) {
-//    this.hideAppPkg.clear();
-//    this.hideAppPkg.addAll(hideAppPkg);
-//  }
-
   public void setShouldHideDivider(boolean shouldHideDivider) {
     this.shouldHideDivider = shouldHideDivider;
-    // resetItemsLayout();
   }
-
-//  public Set<String> getHideAppPkg() {
-//    return hideAppPkg;
-//  }
-
-//  public void refreshReplacedIcon() {
-////    this.iconReplaceFile.clear();
-////    this.iconReplacePkg.clear();
-////    if (getContext().getExternalCacheDir() == null) return;
-////    if (!Config.showCustomIcon) {
-////      File iconFileRoot = new File(getContext().getExternalCacheDir().getParentFile().getParentFile().getParentFile().getParentFile(), "E-Ink Launcher" + File.separator + "icon");
-////      if (iconFileRoot == null || iconFileRoot.listFiles() == null) return;
-////      for (File file : iconFileRoot.listFiles()) {
-////        this.iconReplaceFile.add(file);
-////        this.iconReplacePkg.add(file.getName().substring(0, file.getName().lastIndexOf(".")));
-////      }
-////    }
-//    refresh(true);
-////        this.iconReplaceFile.addAll(iconReplaceFile);
-//  }
 
   private void init() {
     dragDistance = Math.min(getMeasuredWidth(), getMeasuredHeight()) / 6f;
-//    packageManager = getContext().getPackageManager();
-
 //    gestureDetector = new GestureDetector(getContext(), onGestureListener);
   }
-
-//  public void setPageChanger(PageChanger pageChanger) {
-//    this.pageChanger = pageChanger;
-//  }
 
   @Override
   protected void onLayout(boolean changed, int l, int t, int r, int b) {
@@ -173,7 +133,6 @@ public class EInkLauncherView extends ViewGroup{
 //      }
       addView(itemView);
     }
-    // refresh();
   }
 
   private void refreshCurrentItems() {
@@ -181,7 +140,6 @@ public class EInkLauncherView extends ViewGroup{
     itemInfoList.addAll(itemCenter.getCurrentPageItemInfoList());
 
     View itemView;
-    //    WifiControl.bind(null);
     for (int i = 0; i < itemCenter.config.rowNum; i++) {
       for (int j = 0; j < itemCenter.config.colNum; j++) {
         final int position = i * itemCenter.config.colNum + j;
@@ -264,15 +222,6 @@ public class EInkLauncherView extends ViewGroup{
           LauncherItemInfo itemInfo = itemInfoList.get(i);
           PackageManager pm = getContext().getPackageManager();
           boolean shouldShowDelete = itemInfo.shouldShowDelete(pm);
-//              boolean showDelete = false;
-//              String packageName = dataList.get(i).activityInfo.packageName;
-//              if (packageName != ItemCenter.wifiPackageName || packageName != ItemCenter.oneKeyLockPackageName){
-//                try {
-//                  showDelete = (packageManager.getPackageInfo(packageName, 0).applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) <= 0;
-//                } catch (PackageManager.NameNotFoundException e) {
-//                  e.printStackTrace();
-//                }
-//              }
           getChildAt(i).findViewById(R.id.menu_delete).setVisibility(shouldShowDelete ? VISIBLE : GONE);
           getChildAt(i).findViewById(R.id.menu_hide).setSelected(itemCenter.isHidden(itemInfo.id));
         }
@@ -300,13 +249,6 @@ public class EInkLauncherView extends ViewGroup{
     }
   }
 
-//  public void refreshItemList() {
-//    itemInfoList.clear();
-//    itemInfoList.addAll(itemCenter.getCurrentPageItemInfoList());
-//    refresh();
-//  }
-
-
   private int getPerItemHeight() {
 //        return (getAdjustedHeight() - (ROW_NUM - 2) * dividerSize) / ROW_NUM;
     return getInnerHeight() / itemCenter.config.rowNum;
@@ -317,16 +259,6 @@ public class EInkLauncherView extends ViewGroup{
 //        return (getAdjustedWidth() - (COL_NUM - 2) * dividerSize) / COL_NUM;
     return getInnerWidth() / itemCenter.config.colNum;
   }
-
-//  public void setColNum(int colNum) {
-//    this.colNum = colNum;
-////    resetItemsLayout();
-//  }
-//
-//  public void setRowNum(int rowNum) {
-//    this.rowNum = rowNum;
-////    resetItemsLayout();
-//  }
 
   private int getInnerHeight() {
     return getInnerHeight(this);
@@ -501,16 +433,11 @@ public class EInkLauncherView extends ViewGroup{
       case MotionEvent.ACTION_UP:
         if ((event.getX() > touchDown.x && dragDistance < Math.abs(event.getX() - touchDown.x)) ||
                 (event.getY() > touchDown.y && dragDistance < Math.abs(event.getY() - touchDown.y))) {
-//          if (pageChanger != null)
-//            pageChanger.toPrevious();
-////                    dataCenter.showLastPage();
           itemCenter.showPreviousPage();
           return true;
         }
         if ((event.getX() < touchDown.x && dragDistance < Math.abs(event.getX() - touchDown.x)) ||
                 (event.getY() < touchDown.y && dragDistance < Math.abs(event.getY() - touchDown.y))) {
-//          if (pageChanger != null)
-//            pageChanger.toNext();
           itemCenter.showNextPage();
           return true;
         }
@@ -585,7 +512,6 @@ public class EInkLauncherView extends ViewGroup{
 //  };
 
   //endregion
-  //region Description
 
   @Override
   public boolean onInterceptTouchEvent(MotionEvent event) {
@@ -604,28 +530,4 @@ public class EInkLauncherView extends ViewGroup{
   public float getFontSize() {
     return fontSize;
   }
-  //endregion
-
-
-//  public void setSystemApp(boolean systemApp) {
-//    isSystemApp = systemApp;
-//  }
-//
-//  public boolean isSystemApp() {
-//    return isSystemApp;
-//  }
-
-//  public void setOnSingleAppHideStatusChangedListener(OnSingleAppHideChange onSingleAppHideChange) {
-//    this.onSingleAppHideChange = onSingleAppHideChange;
-//  }
-
-  public interface PageChanger {
-    void toNext();
-
-    void toPrevious();
-  }
-
-//  public interface OnSingleAppHideChange {
-//    void change(String pkg);
-//  }
 }

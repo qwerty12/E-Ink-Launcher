@@ -21,16 +21,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 
 import cn.modificator.launcher.ftpservice.FTPService;
-import cn.modificator.launcher.model.ItemCenter;
-import cn.modificator.launcher.model.LauncherItemInfo;
-import cn.modificator.launcher.model.LauncherItemInfoComparator;
-import cn.modificator.launcher.model.WifiControl;
+import cn.modificator.launcher.modelController.ItemCenter;
+import cn.modificator.launcher.modelController.LauncherItemInfoComparator;
+import cn.modificator.launcher.modelController.WifiControl;
 
 import static android.app.Activity.RESULT_OK;
 

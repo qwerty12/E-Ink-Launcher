@@ -1,6 +1,5 @@
 package cn.modificator.launcher;
 
-import android.app.Activity;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -25,7 +24,6 @@ import android.widget.TextView;
 import androidx.fragment.app.FragmentActivity;
 
 import java.io.File;
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -35,11 +33,11 @@ import java.util.Map;
 
 import cn.modificator.launcher.ftpservice.FTPReceiver;
 import cn.modificator.launcher.ftpservice.FTPService;
-import cn.modificator.launcher.model.AdminReceiver;
-import cn.modificator.launcher.model.ItemCenter;
-import cn.modificator.launcher.model.HomeEntranceService;
-import cn.modificator.launcher.model.LauncherItemInfo;
-import cn.modificator.launcher.model.WifiControl;
+import cn.modificator.launcher.modelController.AdminReceiver;
+import cn.modificator.launcher.modelController.ItemCenter;
+import cn.modificator.launcher.modelController.HomeEntranceService;
+import cn.modificator.launcher.modelController.LauncherItemInfo;
+import cn.modificator.launcher.modelController.WifiControl;
 import cn.modificator.launcher.widgets.BatteryView;
 import cn.modificator.launcher.widgets.EInkLauncherView;
 
@@ -124,13 +122,9 @@ public class Launcher extends FragmentActivity {
       e.printStackTrace();
     }
 
-//        launcherView.setIconReplaceFile(Arrays.asList(iconFile.list()));
-//    launcherView.setHideAppPkg(config.getHiddenItemIds());
     launcherView.setShouldHideDivider(config.getDividerHideStatus());
     launcherView.setFontSize(config.getFontSize());
 
-
-    // TODO loadAllApps
     //加载之前保存的桌面数据
     config.getColNum();
     config.getRowNum();
@@ -170,17 +164,7 @@ public class Launcher extends FragmentActivity {
         v.setVisibility(View.GONE);
       }
     });
-//    launcherView.setPageChanger(new EInkLauncherView.PageChanger() {
-//      @Override
-//      public void toNext() {
-//        itemCenter.showNextPage();
-//      }
-//
-//      @Override
-//      public void toPrevious() {
-//        itemCenter.showPreviousPage();
-//      }
-//    });
+
 //        android:format12Hour="yyyy-MM-dd aahh:mm EEEE"
 //        android:format24Hour="yyyy-MM-dd aahh:mm EEEE"
 
@@ -204,15 +188,11 @@ public class Launcher extends FragmentActivity {
   }
 
   private void updateRowNum(int rowNum) {
-//    launcherView.setRowNum(rowNum);
-//    itemCenter.setRowNum(rowNum);
     config.setRowNum(rowNum);
     itemCenter.refresh(ItemCenter.REFRESH_LEVEL_3_PAGE, EInkLauncherView.REFRESH_LEVEL_0_LAYOUT);
   }
 
   private void updateColNum(int colNum) {
-//    launcherView.setColNum(colNum);
-//    itemCenter.setColNum(colNum);
     config.setColNum(colNum);
     itemCenter.refresh(ItemCenter.REFRESH_LEVEL_3_PAGE, EInkLauncherView.REFRESH_LEVEL_0_LAYOUT);
   }
@@ -344,6 +324,7 @@ public class Launcher extends FragmentActivity {
       } else if (bundle.containsKey(HIDE_DIVIDER_KEY)) {
         launcherView.setShouldHideDivider(bundle.getBoolean(HIDE_DIVIDER_KEY));
         config.setDividerHideStatus(bundle.getBoolean(HIDE_DIVIDER_KEY));
+        launcherView.refresh(EInkLauncherView.REFRESH_LEVEL_0_LAYOUT);
       } else if (bundle.containsKey(DO_MANAGE_APP_KEY)) {
         itemCenter.setInManagingState(true);
         itemCenter.refresh(ItemCenter.REFRESH_LEVEL_0_ALL);
@@ -367,10 +348,10 @@ public class Launcher extends FragmentActivity {
   BroadcastReceiver appChangedReceiver = new BroadcastReceiver() {
     @Override
     public void onReceive(Context context, Intent intent) {
-        // TODO loadAllApps CompareMappsToHideAppsAndRemoveHideApps
       itemCenter.refresh(ItemCenter.REFRESH_LEVEL_0_ALL);
     }
   };
+
   BroadcastReceiver batteryLevelReceiver = new BroadcastReceiver() {
     @Override
     public void onReceive(Context context, Intent intent) {

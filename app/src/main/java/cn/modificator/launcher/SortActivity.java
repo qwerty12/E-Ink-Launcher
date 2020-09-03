@@ -2,44 +2,31 @@ package cn.modificator.launcher;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import cn.modificator.launcher.model.LauncherItemInfo;
-import cn.modificator.launcher.model.LauncherItemInfoComparator;
-import cn.modificator.launcher.model.LauncherItemInfoDeserializer;
-import cn.modificator.launcher.model.LauncherItemInfoSerializer;
-import cn.modificator.launcher.widgets.RatioImageView;
+import cn.modificator.launcher.modelController.LauncherItemInfo;
+import cn.modificator.launcher.modelController.LauncherItemInfoComparator;
 
 public class SortActivity extends Activity {
   public static final String ALL_ITEMS_WITH_PRIORITY_KEY = "allItemsWithPriorityKey";
@@ -131,9 +118,7 @@ class SortItemAdapter extends RecyclerView.Adapter<SortItemAdapter.SortItemHolde
       }
 
       @Override
-      public void afterTextChanged(Editable s) {
-
-      }
+      public void afterTextChanged(Editable s) { }
     });
 
     holder.itemInfo.setIconImageForView(icon, false);

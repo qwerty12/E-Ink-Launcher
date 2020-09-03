@@ -1,6 +1,5 @@
 package cn.modificator.launcher;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 
@@ -13,10 +12,8 @@ import android.content.pm.ShortcutInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.TypedValue;
@@ -26,13 +23,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.core.content.pm.ShortcutInfoCompat;
-import androidx.core.content.pm.ShortcutManagerCompat;
-import androidx.core.graphics.drawable.IconCompat;
-
 import java.util.UUID;
 
-import cn.modificator.launcher.model.LauncherItemInfo;
+import cn.modificator.launcher.modelController.LauncherItemInfo;
 
 public class AddShortcutActivity extends Activity {
 

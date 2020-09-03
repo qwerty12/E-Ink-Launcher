@@ -1,4 +1,4 @@
-package cn.modificator.launcher.model;
+package cn.modificator.launcher.modelController;
 
 import android.app.AlertDialog;
 import android.content.ComponentName;
@@ -18,7 +18,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import cn.modificator.launcher.Config;
@@ -245,20 +244,10 @@ public class ItemCenter {
     }
   }
 
-  // TODO getAppListWithoutHidenApps getAppListFromPre setAppsListToPre
-
   public void setLauncherView(EInkLauncherView launcherView) {
     this.launcherView = launcherView;
     this.launcherView.setItemCenter(this);
     isInManagingState = false;
-//    this.launcherView.setOnSingleAppHideStatusChangedListener(new EInkLauncherView.OnSingleAppHideChange() {
-//      @Override
-//      public void change(String pkg) {
-//        refreshAllItemLists();
-//      }
-//    });
-    // launcherView.setHideAppPkg(hiddenItemIds);
-    // setPageShow();
   }
 
   public void setTvPageStatus(TextView tvPageStatus) {
@@ -325,8 +314,6 @@ public class ItemCenter {
 
     mAllItems.add(createPowerItem());
     mAllItems.add(createWifiItem());
-    // launcherView.setHideAppPkg(hideApps);
-    // updatePageCount();
   }
 
   private void loadAllReplacedIcons() {
@@ -387,18 +374,6 @@ public class ItemCenter {
     refresh(REFRESH_LEVEL_3_PAGE);
   }
 
-//  public void setColNum(int colNum) {
-//    this.colNum = colNum;
-//    updatePageCount();
-//    refresh(REFRESH_LEVEL_3_PAGE);
-//  }
-//
-//  public void setRowNum(int rowNum) {
-//    this.rowNum = rowNum;
-//    updatePageCount();
-//    refresh(REFRESH_LEVEL_3_PAGE);
-//  }
-
   public void refresh(int level) {
     refresh(level, -1);
   }
@@ -426,59 +401,11 @@ public class ItemCenter {
     launcherView.refresh(refreshLevelForLauncherView >= 0 ? refreshLevelForLauncherView : EInkLauncherView.REFRESH_LEVEL_1_CURRENT_ITEMS);
   }
 
-//  public void refreshAppList() {
-//    refreshAppList(false);
-//  }
-
-  // TODO showAll?
-//  public void refreshAppList(boolean showAll) {
-//    if (showAll) loadAllApps();
-//    else loadApps();
-//    setPageShow();
-//  }
-
-  // TODO sortAppList
-/*
-    public void addAppInfo(ResolveInfo info) {
-        mApps.add(info);
-        hideApps.add(info.activityInfo.packageName);
-        updatePageCount();
-        setPageShow();
-    }
-
-    public void removeAppInfo(ResolveInfo info) {
-        mApps.remove(info);
-        hideApps.remove(info.activityInfo.packageName);
-        updatePageCount();
-        setPageShow();
-    }*/
-
-//  private void setPageShow() {
-//    int itemCount = colNum * rowNum;
-//    int pageStart = pageIndex * itemCount;
-//    int pageEnd = (pageStart + itemCount) > mCurrentVisibleSortedItems.size() ? mCurrentVisibleSortedItems.size() : (pageStart + itemCount);
-//    // launcherView.setAppList(mApps.subList(pageStart, pageEnd));
-//    tvPageStatus.setText((pageIndex + 1) + "/" + (pageCount + 1));
-//  }
-
   private void updatePageCount() {
-//        pageCount = (int) Math.ceil(mApps.size() * 1f / (colNum * rowNum));
     pageCount = mCurrentVisibleSortedItems.size() / (config.colNum * config.rowNum) - (mCurrentVisibleSortedItems.size() % (config.colNum * config.rowNum) == 0 ? 1 : 0);
     pageCount = pageCount < 0 ? 0 : pageCount;
     pageIndex = pageIndex > pageCount ? pageCount : pageIndex;
   }
-
-   /* public boolean isHide(String pkg) {
-        return hideApps.contains(pkg);
-    }
-
-    public void addHide(String pkg) {
-        hideApps.add(pkg);
-    }
-
-    public void removeHide(String pkg) {
-        hideApps.remove(pkg);
-    }*/
 
    private LauncherItemInfo createWifiItem(){
      LauncherItemInfo itemInfo = new LauncherItemInfo(LauncherItemInfo.TYPE_SPECIAL, 0);
