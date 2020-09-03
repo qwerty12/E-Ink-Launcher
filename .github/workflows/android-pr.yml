@@ -1,4 +1,4 @@
-name: Android Master CI
+name: Android Pull Request CI
 
 on:
   push:
@@ -27,20 +27,20 @@ jobs:
         id: sign-epd
         with:
           releaseDirectory: app/build/outputs/apk/epd/release
-          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          signingKeyBase64: ${{ secrets.PR_SIGNING_KEY }}
           alias: ${{ secrets.ALIAS }}
-          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
+          keyStorePassword: ${{ secrets.PR_KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.PR_KEY_PASSWORD }}
 
       - name: Sign Home APK
         uses: r0adkll/sign-android-release@v1
         id: sign-home
         with:
           releaseDirectory: app/build/outputs/apk/home/release
-          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          signingKeyBase64: ${{ secrets.PR_SIGNING_KEY }}
           alias: ${{ secrets.ALIAS }}
-          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
+          keyStorePassword: ${{ secrets.PR_KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.PR_KEY_PASSWORD }}
 
       - name: Upload EPD APK
         uses: actions/upload-artifact@v2

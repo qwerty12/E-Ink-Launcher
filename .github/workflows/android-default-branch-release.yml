@@ -1,0 +1,76 @@
+name: Android Default Branch Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+    branches:
+      - v0.x
+
+jobs:
+  apk:
+    name: Generate APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 10
+
+      - name: Build APK
+        run: bash ./gradlew assembleRelease --stacktrace
+
+      - name: Sign EPD APK
+        uses: r0adkll/sign-android-release@v1
+        id: sign-epd
+        with:
+          releaseDirectory: app/build/outputs/apk/epd/release
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          alias: ${{ secrets.ALIAS }}
+          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Sign Home APK
+        uses: r0adkll/sign-android-release@v1
+        id: sign-home
+        with:
+          releaseDirectory: app/build/outputs/apk/home/release
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          alias: ${{ secrets.ALIAS }}
+          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset EPD
+        uses: actions/create-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.sign-epd.outputs.signedReleaseFile }}
+          asset_name: e-ink-launcher-epd-release-${{ github.ref }}.apk
+          asset_content_type: application/vnd.android.package-archive
+
+      - name: Upload Release Asset Home
+        uses: actions/create-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.sign-home.outputs.signedReleaseFile }}
+          asset_name: e-ink-launcher-home-release-${{ github.ref }}.apk
+          asset_content_type: application/vnd.android.package-archive
