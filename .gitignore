@@ -13,6 +13,6 @@ projectFilesBackup
 config.gradle
 KeyStore.key
 debug.keystore
-
+*.jks
 /app/build/
 /app/release/
