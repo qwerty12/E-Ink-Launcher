@@ -14,31 +14,75 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-            <View
-                android:layout_width="wrap_content"
-                android:layout_height="0.1dp"
-                android:layout_weight="1" />
-
-            <cn.modificator.launcher.widgets.RatioImageView
+            <ImageView
                 android:id="@+id/itemIcon"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                app:ratioHeight="1"
-                app:ratioWidth="1"
-                app:reference="width"
-                tools:src="@mipmap/ic_launcher" />
+                app:layout_constraintBottom_toBottomOf="@id/guideline_bottom"
+                app:layout_constraintRight_toRightOf="@id/guideline_right"
+                app:layout_constraintLeft_toLeftOf="@id/guideline_left"
+                app:layout_constraintTop_toTopOf="@id/guideline_top"
+                tools:src="@mipmap/ic_launcher"
+                android:layout_height="0dp"
+                android:layout_width="0dp"/>
 
-            <View
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_left"
                 android:layout_width="wrap_content"
-                android:layout_height="0.1dp"
-                android:layout_weight="1" />
-        </LinearLayout>
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.2" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.8" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_top"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.1" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.9" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="horizontal">-->
+
+<!--            <View-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="0.1dp"-->
+<!--                android:layout_weight="1" />-->
+
+<!--            <cn.modificator.launcher.widgets.RatioImageView-->
+<!--                android:id="@+id/itemIcon"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="0.5"-->
+<!--                app:ratioHeight="1"-->
+<!--                app:ratioWidth="1"-->
+<!--                app:reference="width"-->
+<!--                tools:src="@mipmap/ic_launcher" />-->
+
+<!--            <View-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="0.1dp"-->
+<!--                android:layout_weight="1" />-->
+<!--        </LinearLayout>-->
 
         <cn.modificator.launcher.widgets.ObserverFontTextView
             android:id="@+id/itemTitle"

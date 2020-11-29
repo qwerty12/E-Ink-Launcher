@@ -13,6 +13,7 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import cn.modificator.launcher.R;
 import cn.modificator.launcher.widgets.ObserverFontTextView;
@@ -26,7 +27,7 @@ import cn.modificator.launcher.widgets.RatioImageView;
 
 public class WifiControl {
   ObserverFontTextView appName;
-  RatioImageView appImage;
+  ImageView appImage;
   WifiStateReceiver wifiStateReceiver;
   WifiManager wifiManager;
   ConnectivityManager connManager;
