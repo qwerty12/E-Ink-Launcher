@@ -5,7 +5,7 @@
 - fixes some minor bugs
 - supports sorting apps
 - supports giving priority to apps (manually sorting)
-- supports shortcuts (both Android 4.4- and 4.4+ kind of shortcut; you can manually add shortcut in [Shortcut Maker](https://play.google.com/store/apps/details?id=rk.android.app.shortcutmaker) if some shortcuts is intended to be created from the launcher.)
+- supports shortcuts (both Android 4.4- and 4.4+ kind of shortcut; you can manually add shortcut in [Shortcut Maker](https://play.google.com/store/apps/details?id=rk.android.app.shortcutmaker) if some shortcuts are intended to be created from the launcher.)
 
 ![Screenshot 1 of E-Ink Launcher.](doc/screenshot1.png)
 ![Screenshot 2 of E-Ink Launcher.](doc/screenshot2.png)
