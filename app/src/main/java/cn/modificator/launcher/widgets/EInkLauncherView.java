@@ -3,6 +3,7 @@ package cn.modificator.launcher.widgets;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -100,7 +102,15 @@ public class EInkLauncherView extends ViewGroup{
     observable.deleteObservers();
     removeAllViews();
     for (int i = 0; i < itemCenter.config.rowNum * itemCenter.config.colNum; i++) {
-      View itemView = LayoutInflater.from(getContext()).inflate(R.layout.launcher_item, this, false);
+      FrameLayout itemView = (FrameLayout) LayoutInflater.from(getContext()).inflate(R.layout.launcher_item, this, false);
+      itemView.setClipChildren(false);
+      itemView.setClipToPadding(false);
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+        itemView.setClipBounds(null);
+      }
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        itemView.setClipToOutline(false);
+      }
       observable.addObserver((Observer) itemView.findViewById(R.id.itemTitle));
       TextView tvItemTitle = ((TextView)itemView.findViewById(R.id.itemTitle));
       tvItemTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, itemCenter.config.fontSize);
@@ -116,7 +126,7 @@ public class EInkLauncherView extends ViewGroup{
         itemView.setBackgroundResource(R.drawable.app_item_right);
       } else if (i > (itemCenter.config.rowNum - 1) * itemCenter.config.colNum - 1){
         itemView.setBackgroundResource(R.drawable.app_item_bottom);
-      } else{
+      } else {
         itemView.setBackgroundResource(R.drawable.app_item_normal);
       }
 //      if (COL_NUM * i + j < dataList.size() + 2) {

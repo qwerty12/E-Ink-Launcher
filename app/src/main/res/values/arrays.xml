@@ -35,7 +35,7 @@
         <item>Install Time-</item>
         <item>Custom&amp;Time+</item>
         <item>Custom&amp;Time-</item>
-        <item>Custom&amp;Alph-</item>
+        <item>Custom&amp;Alph+</item>
         <item>Custom&amp;Alph-</item>
     </string-array>
     <string-array name="file_types">

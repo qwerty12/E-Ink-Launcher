@@ -49,14 +49,14 @@
     <string name="dialog_close">Close</string>
     <string name="dialog_confim">Confirm</string>
 
-    <string name="wifi_status_off">Wi-Fi OFF</string>
-    <string name="wifi_status_closing">Wi-Fi closing</string>
-    <string name="wifi_status_opening">Wi-Fi opening</string>
-    <string name="wifi_status_on">Wi-Fi ON</string>
+    <string name="wifi_status_off">Wi-Fi Off</string>
+    <string name="wifi_status_closing">Wi-Fi Off…</string>
+    <string name="wifi_status_opening">Wi-Fi On…</string>
+    <string name="wifi_status_on">Wi-Fi On</string>
     <string name="wifi_status_connected">Wi-Fi connected:%s</string>
-    <string name="wifi_status_connecting">WiFi connecting</string>
-    <string name="wifi_status_disconnected">WiFi disconnected</string>
-    <string name="wifi_status_disconnecting">WiFi disconnecting</string>
+    <string name="wifi_status_connecting">Wi-Fi connecting</string>
+    <string name="wifi_status_disconnected">Wi-Fi disconnected</string>
+    <string name="wifi_status_disconnecting">Wi-Fi disconnecting</string>
 
     <string name="item_lockscreen">Lock Screen</string>
     <string name="restart_launcher">Restart Launcher</string>

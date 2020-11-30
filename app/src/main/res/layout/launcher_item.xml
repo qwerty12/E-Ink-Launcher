@@ -6,15 +6,40 @@
     android:layout_height="match_parent"
     android:clickable="true"
     android:orientation="vertical"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:layoutMode="opticalBounds"
     tools:background="@drawable/app_item_normal">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:layoutMode="opticalBounds">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_icon_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.7" />
+
+        <View
+            android:id="@+id/icon_text_up_margin"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@id/guideline_icon_text"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginBottom="2dp"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/guideline_icon_text"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
@@ -34,28 +59,28 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.2" />
+                app:layout_constraintGuide_percent="0.1" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline_right"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.8" />
+                app:layout_constraintGuide_percent="0.9" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline_top"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.1" />
+                app:layout_constraintGuide_percent="0.15" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline_bottom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.9" />
+                app:layout_constraintGuide_percent="0.95" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 <!--        <LinearLayout-->
@@ -86,15 +111,21 @@
 
         <cn.modificator.launcher.widgets.ObserverFontTextView
             android:id="@+id/itemTitle"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/icon_text_up_margin"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
             android:gravity="center"
             android:textColor="#000000"
             android:maxLines="2"
-            android:textSize="30sp" />
+            android:baselineAligned="false"
+            android:textSize="30sp"
+            android:layout_marginTop="-10dp"
+            />
         <!--android:singleLine="true"-->
         <!--10sp-->
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:id="@+id/item_menu"
