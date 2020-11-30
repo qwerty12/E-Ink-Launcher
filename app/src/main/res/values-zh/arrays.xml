@@ -33,7 +33,9 @@
         <item>拼音字母-</item>
         <item>安装时间+</item>
         <item>安装时间-</item>
-        <item>自定义+</item>
-        <item>自定义-</item>
+        <item>自定&amp;时间+</item>
+        <item>自定&amp;时间-</item>
+        <item>自定&amp;字母+</item>
+        <item>自定&amp;字母-</item>
     </string-array>
 </resources>

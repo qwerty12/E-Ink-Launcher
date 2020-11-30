@@ -8,6 +8,7 @@ public class LauncherItemInfoComparator implements Comparator<LauncherItemInfo> 
   public static final int SORT_MODE_ALPHABETICAL = 1 << 3;
   public static final int SORT_MODE_FIRST_APPEAR = 3 << 3;
   public static final int SORT_MODE_CUSTOM_WITH_FIRST_APPEAR = 4 << 3;
+  public static final int SORT_MODE_CUSTOM_WITH_ALPHABETICAL = 5 << 3;
   public static final int SORT_ORDER_MASK = 0b111;
   public static final int SORT_ORDER_ASC = 1;
   public static final int SORT_ORDER_DESC = 2;
@@ -40,8 +41,10 @@ public class LauncherItemInfoComparator implements Comparator<LauncherItemInfo> 
     int ascendingResult;
     switch (flags & SORT_MODE_MASK) {
       case SORT_MODE_ALPHABETICAL:
-        Collator collator = Collator.getInstance();
-        ascendingResult = collator.compare(itemInfo1.title.toString(), itemInfo2.title.toString());
+        {
+          Collator collator = Collator.getInstance();
+          ascendingResult = collator.compare(itemInfo1.title.toString(), itemInfo2.title.toString());
+        }
         break;
       case SORT_MODE_FIRST_APPEAR:
         ascendingResult = Long.valueOf(itemInfo1.firstAppearTime).compareTo(itemInfo2.firstAppearTime);
@@ -50,6 +53,13 @@ public class LauncherItemInfoComparator implements Comparator<LauncherItemInfo> 
         ascendingResult = -(itemInfo1.priority - itemInfo2.priority);
         if (ascendingResult == 0) {
           ascendingResult = Long.valueOf(itemInfo1.firstAppearTime).compareTo(itemInfo2.firstAppearTime);
+        }
+        break;
+      case SORT_MODE_CUSTOM_WITH_ALPHABETICAL:
+        ascendingResult = -(itemInfo1.priority - itemInfo2.priority);
+        if (ascendingResult == 0) {
+          Collator collator = Collator.getInstance();
+          ascendingResult = collator.compare(itemInfo1.title.toString(), itemInfo2.title.toString());
         }
         break;
       default:

@@ -53,6 +53,8 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
           LauncherItemInfoComparator.SORT_MODE_FIRST_APPEAR | LauncherItemInfoComparator.SORT_ORDER_DESC,
           LauncherItemInfoComparator.SORT_MODE_CUSTOM_WITH_FIRST_APPEAR | LauncherItemInfoComparator.SORT_ORDER_ASC,
           LauncherItemInfoComparator.SORT_MODE_CUSTOM_WITH_FIRST_APPEAR | LauncherItemInfoComparator.SORT_ORDER_DESC,
+          LauncherItemInfoComparator.SORT_MODE_CUSTOM_WITH_ALPHABETICAL | LauncherItemInfoComparator.SORT_ORDER_ASC,
+          LauncherItemInfoComparator.SORT_MODE_CUSTOM_WITH_ALPHABETICAL | LauncherItemInfoComparator.SORT_ORDER_DESC,
   };
 
   @Override
