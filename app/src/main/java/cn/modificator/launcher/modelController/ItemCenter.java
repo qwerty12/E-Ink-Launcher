@@ -291,10 +291,8 @@ public class ItemCenter {
       newItemInfo.id = newItemInfo.componentName.flattenToString();
       newItemInfo.packageName = r.activityInfo.packageName;
       newItemInfo.title = r.loadLabel(packageManager);
-      newItemInfo.intent = new Intent()
-              .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
-              .addCategory(Intent.CATEGORY_LAUNCHER)
-              .setComponent(newItemInfo.componentName);
+      newItemInfo.intent = Intent.makeMainActivity(newItemInfo.componentName)
+              .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 
       newItemInfo.loadDrawable(r, packageManager);
 
