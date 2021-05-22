@@ -11,9 +11,6 @@ android {
 //            storeFile release.storeFile
 //            storePassword release.storePassword
 //        }
-        debug {
-            storeFile file("../debug.keystore")
-        }
     }
     compileSdkVersion 29
     buildToolsVersion '29.0.3'
@@ -53,9 +50,9 @@ android {
         home {
             dimension "screen"
         }
-        epd {
+        /*epd {
             dimension "screen"
-        }
+        }*/
     }
     packagingOptions {
         exclude 'proguard-project.txt'
