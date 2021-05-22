@@ -241,7 +241,7 @@ public class Launcher extends FragmentActivity {
       boolean is24Hour = DateFormat.is24HourFormat(this);
       mCalendar.setTimeInMillis(System.currentTimeMillis());
 
-      StringBuilder timeFormatTextBuilder = new StringBuilder("yyyy-MM-dd ");
+      StringBuilder timeFormatTextBuilder = new StringBuilder("EE, d MMM yyyy ");
       if (!is24Hour && isChina) {
         timeFormatTextBuilder.append(Utils.getAMPMCNString(mCalendar.get(Calendar.HOUR), mCalendar.get(Calendar.AM_PM)));
       }
@@ -253,7 +253,6 @@ public class Launcher extends FragmentActivity {
       if (!is24Hour && !isChina) {
         timeFormatTextBuilder.append(" a");
       }
-      timeFormatTextBuilder.append(" EEEE");
       textClock.setText(new SimpleDateFormat(timeFormatTextBuilder.toString(), Locale.getDefault()).format(mCalendar.getTime()));
     }
   }
