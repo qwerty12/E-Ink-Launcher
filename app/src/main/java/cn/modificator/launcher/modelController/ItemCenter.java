@@ -169,7 +169,7 @@ public class ItemCenter {
       textView.setText(title, TextView.BufferType.SPANNABLE);
       textView.setTextIsSelectable(true);
 
-      String items[] = {/*context.getString(R.string.dialog_cancel),*/ "Hide", "DPI Setting", context.getString(R.string.dialog_uninstall)};
+      String items[] = {/*context.getString(R.string.dialog_cancel),*/ "Hide", "DPI Setting", "App Info", context.getString(R.string.dialog_uninstall)};
       AlertDialog dialog1 = new AlertDialog.Builder(context)
               .setIcon(itemInfo.drawable) // TODO: show replaced icon here?
               .setCustomTitle(textView)
@@ -192,6 +192,10 @@ public class ItemCenter {
                       context.startActivity(dpiIntent);
                       break;
                     case 2:
+                      Intent appDetailsIntent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + itemInfo.packageName));
+                      context.startActivity(appDetailsIntent);
+                      break;
+                    case 3:
                       Intent deleteIntent = new Intent(Intent.ACTION_DELETE, Uri.parse("package:" + itemInfo.packageName));
                       context.startActivity(deleteIntent);
                       break;
