@@ -222,6 +222,7 @@ public class EInkLauncherView extends ViewGroup{
   }
 
   private void refreshWithUpdatedManagingState() {
+    PackageManager pm = getContext().getPackageManager();
     for (int i = 0; i < getChildCount(); i++) {
       if (i < itemInfoList.size()){
         if (!itemCenter.isInManagingState()){
@@ -230,7 +231,6 @@ public class EInkLauncherView extends ViewGroup{
           ((ViewGroup) getChildAt(i)).findViewById(R.id.item_menu).setVisibility(VISIBLE);
 
           LauncherItemInfo itemInfo = itemInfoList.get(i);
-          PackageManager pm = getContext().getPackageManager();
           boolean shouldShowDelete = itemInfo.shouldShowDelete(pm);
           getChildAt(i).findViewById(R.id.menu_delete).setVisibility(shouldShowDelete ? VISIBLE : GONE);
           getChildAt(i).findViewById(R.id.menu_hide).setSelected(itemCenter.isHidden(itemInfo.id));

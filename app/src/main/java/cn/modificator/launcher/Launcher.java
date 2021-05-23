@@ -478,15 +478,15 @@ public class Launcher extends FragmentActivity {
     }
   }
 
-  public boolean isSystemApp(PackageInfo pInfo) {
+  public static boolean isSystemApp(PackageInfo pInfo) {
     return ((pInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0);
   }
 
-  public boolean isSystemUpdateApp(PackageInfo pInfo) {
+  public static boolean isSystemUpdateApp(PackageInfo pInfo) {
     return ((pInfo.applicationInfo.flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0);
   }
 
-  public boolean isUserApp(PackageInfo pInfo) {
+    public static boolean isUserApp(PackageInfo pInfo) {
     return (!isSystemApp(pInfo) && !isSystemUpdateApp(pInfo));
   }
 

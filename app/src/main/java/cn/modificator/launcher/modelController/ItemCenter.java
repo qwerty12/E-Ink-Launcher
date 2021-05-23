@@ -173,10 +173,17 @@ public class ItemCenter {
       final boolean isAndroidSettings = itemInfo.packageName.equals("com.android.settings");
 
       String items[] = {/*context.getString(R.string.dialog_cancel),*/ "Hide", "DPI Setting", "App Info", context.getString(R.string.dialog_uninstall)};
-      if (isAndroidSettings) {
-        final int len = items.length;
-        items = Arrays.copyOf(items, len + 1);
-        items[len] = "Accessibility settings";
+      try {
+        if (isAndroidSettings || !Launcher.isUserApp(context.getPackageManager().getPackageInfo(itemInfo.packageName, 0))) {
+          if (!isAndroidSettings) {
+            items = Arrays.copyOf(items, items.length - 1);
+          } else {
+            items[items.length - 1] = "Accessibility settings";
+          }
+        }
+      } catch (PackageManager.NameNotFoundException e) {
+        e.printStackTrace();
+        return;
       }
       AlertDialog dialog1 = new AlertDialog.Builder(context)
               .setIcon(itemInfo.drawable) // TODO: show replaced icon here?
@@ -204,11 +211,11 @@ public class ItemCenter {
                       context.startActivity(appDetailsIntent);
                       break;
                     case 3:
-                      Intent deleteIntent = new Intent(Intent.ACTION_DELETE, Uri.parse("package:" + itemInfo.packageName));
-                      context.startActivity(deleteIntent);
-                      break;
-                    case 4:
-                      if (isAndroidSettings) {
+                      if (!isAndroidSettings) {
+                        Intent deleteIntent = new Intent(Intent.ACTION_DELETE, Uri.parse("package:" + itemInfo.packageName));
+                        context.startActivity(deleteIntent);
+                      }
+                      else {
                         Intent accessibilityIntent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
                         context.startActivity(accessibilityIntent);
                       }
