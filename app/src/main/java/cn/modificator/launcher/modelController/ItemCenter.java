@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -169,7 +170,14 @@ public class ItemCenter {
       textView.setText(title, TextView.BufferType.SPANNABLE);
       textView.setTextIsSelectable(true);
 
+      final boolean isAndroidSettings = itemInfo.packageName.equals("com.android.settings");
+
       String items[] = {/*context.getString(R.string.dialog_cancel),*/ "Hide", "DPI Setting", "App Info", context.getString(R.string.dialog_uninstall)};
+      if (isAndroidSettings) {
+        final int len = items.length;
+        items = Arrays.copyOf(items, len + 1);
+        items[len] = "Accessibility settings";
+      }
       AlertDialog dialog1 = new AlertDialog.Builder(context)
               .setIcon(itemInfo.drawable) // TODO: show replaced icon here?
               .setCustomTitle(textView)
@@ -198,6 +206,12 @@ public class ItemCenter {
                     case 3:
                       Intent deleteIntent = new Intent(Intent.ACTION_DELETE, Uri.parse("package:" + itemInfo.packageName));
                       context.startActivity(deleteIntent);
+                      break;
+                    case 4:
+                      if (isAndroidSettings) {
+                        Intent accessibilityIntent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                        context.startActivity(accessibilityIntent);
+                      }
                       break;
                   }
                 }
