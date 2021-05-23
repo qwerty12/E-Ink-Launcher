@@ -10,6 +10,11 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.PowerManager;
+import android.text.Layout;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.AlignmentSpan;
+import android.text.style.RelativeSizeSpan;
 import android.widget.TextView;
 
 import java.io.File;
@@ -154,33 +159,46 @@ public class ItemCenter {
       }
       break;
     case LauncherItemInfo.TYPE_LAUNCHER_ACTIVITY:
+      SpannableStringBuilder title = new SpannableStringBuilder(itemInfo.title);
+      title.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, title.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+      title.setSpan(new RelativeSizeSpan(1.75f), 0,title.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE); // set size
+      title.append("\n\n");
+      title.append(context.getString(R.string.dialog_pkg_name, itemInfo.packageName));
+      title.append("\n");
+      TextView textView = new TextView(context);
+      textView.setText(title, TextView.BufferType.SPANNABLE);
+      textView.setTextIsSelectable(true);
+
+      String items[] = {/*context.getString(R.string.dialog_cancel),*/ "Hide", "DPI Setting", context.getString(R.string.dialog_uninstall)};
       AlertDialog dialog1 = new AlertDialog.Builder(context)
               .setIcon(itemInfo.drawable) // TODO: show replaced icon here?
-              .setTitle(itemInfo.title)
-              .setMessage(context.getResources().getString(R.string.dialog_pkg_name, itemInfo.packageName))
-              .setPositiveButton(R.string.dialog_cancel, null)
-              .setNeutralButton(R.string.dialog_hide, new DialogInterface.OnClickListener() {
+              .setCustomTitle(textView)
+              .setItems(items, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                  mTemporaryHiddenItemIds.add(itemInfo.id);
-                  refresh(REFRESH_LEVEL_0_ALL);
-                }
-              })
-              .setNegativeButton(R.string.dialog_uninstall, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                  Intent deleteIntent = new Intent(Intent.ACTION_DELETE, Uri.parse("package:" + itemInfo.packageName));
-                  context.startActivity(deleteIntent);
+                  switch (which) {
+                    case 0:
+                      mTemporaryHiddenItemIds.add(itemInfo.id);
+                      refresh(REFRESH_LEVEL_0_ALL);
+                      break;
+                    case 1:
+                      /* https://github.com/butzist/ActivityLauncher */
+                      Intent dpiIntent = new Intent();
+                      dpiIntent.setComponent(new ComponentName("com.moan.launcher", "com.moan.launcher.settings.EinkSettingsDialog"));
+                      dpiIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                      dpiIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                      dpiIntent.putExtra("appname", itemInfo.title + " ");
+                      dpiIntent.putExtra("packagename", itemInfo.packageName);
+                      context.startActivity(dpiIntent);
+                      break;
+                    case 2:
+                      Intent deleteIntent = new Intent(Intent.ACTION_DELETE, Uri.parse("package:" + itemInfo.packageName));
+                      context.startActivity(deleteIntent);
+                      break;
+                  }
                 }
               })
               .show();
-      try {
-        TextView textView = (TextView) dialog1.getWindow().getDecorView().findViewById(android.R.id.message);
-        textView.setTextIsSelectable(true);
-      }
-      catch(Exception e) {
-        e.printStackTrace();
-      }
       break;
     case LauncherItemInfo.TYPE_SHORTCUT:
       AlertDialog dialog2 = new AlertDialog.Builder(context)
@@ -202,7 +220,7 @@ public class ItemCenter {
                 }
               }).show();
       try {
-        TextView textView = (TextView) dialog2.getWindow().getDecorView().findViewById(android.R.id.message);
+        textView = (TextView) dialog2.getWindow().getDecorView().findViewById(android.R.id.message);
         textView.setTextIsSelectable(true);
       }
       catch(Exception e) {
