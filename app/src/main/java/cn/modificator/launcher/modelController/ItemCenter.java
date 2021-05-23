@@ -51,6 +51,7 @@ public class ItemCenter {
   public static final String WIFI_ITEM_ID = "E-ink_Launcher.WiFi";
   public static final String ONE_KEY_LOCK_ITEM_ID = "E-ink_Launcher.Lock";
   public static final String BRIGHTNESS_ITEM_ID = "E-ink_Launcher.Brightness";
+  public static final String CONTRAST_ITEM_ID = "E-ink_Launcher.Contrast";
 
   public static final int REFRESH_LEVEL_0_ALL = 0;
   private static final int REFRESH_LEVEL_1_MIN = 10;
@@ -120,6 +121,12 @@ public class ItemCenter {
           brightnessIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
           brightnessIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
           context.startActivity(brightnessIntent);
+        } else if (itemInfo.id.equals(ItemCenter.CONTRAST_ITEM_ID)) {
+          Intent contrastIntent = new Intent();
+          contrastIntent.setComponent(new ComponentName("com.android.systemui", "com.android.systemui.einksettings.EinkSettingsActivity"));
+          contrastIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+          contrastIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+          context.startActivity(contrastIntent);
         }
         break;
       case LauncherItemInfo.TYPE_LAUNCHER_ACTIVITY:
@@ -166,6 +173,12 @@ public class ItemCenter {
         WifiControl.onLongClickWifiItem();
       } else if (itemInfo.id.equals(ItemCenter.BRIGHTNESS_ITEM_ID)) {
         context.sendBroadcast(new Intent("com.moan.toggle_backlight"));
+      } else if (itemInfo.id.equals(ItemCenter.CONTRAST_ITEM_ID)) {
+        Intent refreshIntent = new Intent();
+        refreshIntent.setComponent(new ComponentName("com.android.systemui", "com.android.systemui.einksettings.RefreshModeSelectDialog"));
+        refreshIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        refreshIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(refreshIntent);
       }
       break;
     case LauncherItemInfo.TYPE_LAUNCHER_ACTIVITY:
@@ -365,6 +378,7 @@ public class ItemCenter {
     mAllItems.add(createPowerItem());
     mAllItems.add(createWifiItem());
     mAllItems.add(createBrightnessItem());
+    mAllItems.add(createContrastItem());
   }
 
   private void loadAllReplacedIcons() {
@@ -480,6 +494,15 @@ public class ItemCenter {
     itemInfo.id = BRIGHTNESS_ITEM_ID;
     itemInfo.title = "Brightness";
     itemInfo.drawable = mContext.getResources().getDrawable(R.drawable.bad_brightness_icon);
+
+    return itemInfo;
+  }
+
+  private LauncherItemInfo createContrastItem() {
+    LauncherItemInfo itemInfo = new LauncherItemInfo(LauncherItemInfo.TYPE_SPECIAL, 0);
+    itemInfo.id = CONTRAST_ITEM_ID;
+    itemInfo.title = "Contrast";
+    itemInfo.drawable = mContext.getResources().getDrawable(R.drawable.bad_contrast_icon);
 
     return itemInfo;
   }
