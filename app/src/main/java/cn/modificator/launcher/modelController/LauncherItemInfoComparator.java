@@ -26,12 +26,16 @@ public class LauncherItemInfoComparator implements Comparator<LauncherItemInfo> 
       special1 = 1;
     } else if (itemInfo1.id.equals(ItemCenter.ONE_KEY_LOCK_ITEM_ID)) {
       special1 = 2;
+    } else if (itemInfo1.id.equals(ItemCenter.BRIGHTNESS_ITEM_ID)) {
+      special1 = 3;
     }
 
     if (itemInfo2.id.equals(ItemCenter.WIFI_ITEM_ID)) {
       special2 = 1;
     } else if (itemInfo2.id.equals(ItemCenter.ONE_KEY_LOCK_ITEM_ID)) {
       special2 = 2;
+    } else if (itemInfo2.id.equals(ItemCenter.BRIGHTNESS_ITEM_ID)) {
+      special2 = 3;
     }
 
     if (special1 > 0 || special2 > 0) {
