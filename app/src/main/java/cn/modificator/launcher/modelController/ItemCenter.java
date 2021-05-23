@@ -52,6 +52,7 @@ public class ItemCenter {
   public static final String ONE_KEY_LOCK_ITEM_ID = "E-ink_Launcher.Lock";
   public static final String BRIGHTNESS_ITEM_ID = "E-ink_Launcher.Brightness";
   public static final String CONTRAST_ITEM_ID = "E-ink_Launcher.Contrast";
+  public static final String REFRESH_ITEM_ID = "E-ink_Launcher.Refresh";
 
   public static final int REFRESH_LEVEL_0_ALL = 0;
   private static final int REFRESH_LEVEL_1_MIN = 10;
@@ -127,6 +128,8 @@ public class ItemCenter {
           contrastIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
           contrastIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
           context.startActivity(contrastIntent);
+        } else if (itemInfo.id.equals(ItemCenter.REFRESH_ITEM_ID)) {
+          context.sendBroadcast(new Intent("android.eink.force.refresh"));
         }
         break;
       case LauncherItemInfo.TYPE_LAUNCHER_ACTIVITY:
@@ -179,6 +182,8 @@ public class ItemCenter {
         refreshIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         refreshIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(refreshIntent);
+      } else if (itemInfo.id.equals(ItemCenter.REFRESH_ITEM_ID)) {
+        context.sendBroadcast(new Intent("com.mogu.clear_mem"));
       }
       break;
     case LauncherItemInfo.TYPE_LAUNCHER_ACTIVITY:
@@ -379,6 +384,7 @@ public class ItemCenter {
     mAllItems.add(createWifiItem());
     mAllItems.add(createBrightnessItem());
     mAllItems.add(createContrastItem());
+    mAllItems.add(createRefreshItem());
   }
 
   private void loadAllReplacedIcons() {
@@ -503,6 +509,15 @@ public class ItemCenter {
     itemInfo.id = CONTRAST_ITEM_ID;
     itemInfo.title = "Contrast";
     itemInfo.drawable = mContext.getResources().getDrawable(R.drawable.bad_contrast_icon);
+
+    return itemInfo;
+  }
+
+  private LauncherItemInfo createRefreshItem() {
+    LauncherItemInfo itemInfo = new LauncherItemInfo(LauncherItemInfo.TYPE_SPECIAL, 0);
+    itemInfo.id = REFRESH_ITEM_ID;
+    itemInfo.title = "Refresh";
+    itemInfo.drawable = mContext.getResources().getDrawable(R.drawable.bad_clean_icon);
 
     return itemInfo;
   }

@@ -30,6 +30,8 @@ public class LauncherItemInfoComparator implements Comparator<LauncherItemInfo> 
       special1 = 3;
     } else if (itemInfo1.id.equals(ItemCenter.CONTRAST_ITEM_ID)) {
       special1 = 4;
+    } else if (itemInfo1.id.equals(ItemCenter.REFRESH_ITEM_ID)) {
+      special1 = 5;
     }
 
     if (itemInfo2.id.equals(ItemCenter.WIFI_ITEM_ID)) {
@@ -40,6 +42,8 @@ public class LauncherItemInfoComparator implements Comparator<LauncherItemInfo> 
       special2 = 3;
     } else if (itemInfo2.id.equals(ItemCenter.CONTRAST_ITEM_ID)) {
       special2 = 4;
+    } else if (itemInfo2.id.equals(ItemCenter.REFRESH_ITEM_ID)) {
+      special2 = 5;
     }
 
     if (special1 > 0 || special2 > 0) {
