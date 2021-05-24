@@ -142,8 +142,8 @@ public class ItemCenter {
   }
 
   private void showHiddenSettings() {
-    String items[] = {"Accessibility settings", "Locale settings", "TTS settings"};
-    final String activityAction[] = {android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS, android.provider.Settings.ACTION_LOCALE_SETTINGS, "com.android.settings.TTS_SETTINGS"};
+    String items[] = {"Accessibility settings", "Locale settings"};
+    final String activityAction[] = {android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS, android.provider.Settings.ACTION_LOCALE_SETTINGS};
     AlertDialog dialog1 = new AlertDialog.Builder(mContext)
             .setTitle("Extra settings")
             .setItems(items, new DialogInterface.OnClickListener() {
