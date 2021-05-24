@@ -205,7 +205,10 @@ public class ItemCenter {
           if (!isAndroidSettings) {
             items = Arrays.copyOf(items, items.length - 1);
           } else {
-            items[items.length - 1] = "Accessibility settings";
+            final int len = items.length;
+            items[len - 1] = "Accessibility settings";
+            items = Arrays.copyOf(items, items.length + 1);
+            items[len] = "Locale settings";
           }
         }
       } catch (PackageManager.NameNotFoundException e) {
@@ -244,6 +247,12 @@ public class ItemCenter {
                       }
                       else {
                         Intent accessibilityIntent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                        context.startActivity(accessibilityIntent);
+                      }
+                      break;
+                    case 4:
+                      if (isAndroidSettings) {
+                        Intent accessibilityIntent = new Intent(android.provider.Settings.ACTION_LOCALE_SETTINGS);
                         context.startActivity(accessibilityIntent);
                       }
                       break;
@@ -516,7 +525,7 @@ public class ItemCenter {
   private LauncherItemInfo createRefreshItem() {
     LauncherItemInfo itemInfo = new LauncherItemInfo(LauncherItemInfo.TYPE_SPECIAL, 0);
     itemInfo.id = REFRESH_ITEM_ID;
-    itemInfo.title = "Refresh";
+    itemInfo.title = "Clean";
     itemInfo.drawable = mContext.getResources().getDrawable(R.drawable.bad_clean_icon);
 
     return itemInfo;
