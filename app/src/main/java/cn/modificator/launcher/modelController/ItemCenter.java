@@ -141,6 +141,22 @@ public class ItemCenter {
     }
   }
 
+  private void showHiddenSettings() {
+    String items[] = {"Accessibility settings", "Locale settings", "TTS settings"};
+    final String activityAction[] = {android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS, android.provider.Settings.ACTION_LOCALE_SETTINGS, "com.android.settings.TTS_SETTINGS"};
+    AlertDialog dialog1 = new AlertDialog.Builder(mContext)
+            .setTitle("Extra settings")
+            .setItems(items, new DialogInterface.OnClickListener() {
+              @Override
+              public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(activityAction[which]);
+                if (intent != null)
+                  mContext.startActivity(intent);
+              }
+            })
+            .show();
+  }
+
   public void executeItemOnLongClick(final Context context, final LauncherItemInfo itemInfo) {
     switch (itemInfo.type) {
       case LauncherItemInfo.TYPE_SPECIAL:
@@ -205,10 +221,7 @@ public class ItemCenter {
           if (!isAndroidSettings) {
             items = Arrays.copyOf(items, items.length - 1);
           } else {
-            final int len = items.length;
-            items[len - 1] = "Accessibility settings";
-            items = Arrays.copyOf(items, items.length + 1);
-            items[len] = "Locale settings";
+            items[items.length - 1] = "Extra settings...";
           }
         }
       } catch (PackageManager.NameNotFoundException e) {
@@ -246,14 +259,7 @@ public class ItemCenter {
                         context.startActivity(deleteIntent);
                       }
                       else {
-                        Intent accessibilityIntent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
-                        context.startActivity(accessibilityIntent);
-                      }
-                      break;
-                    case 4:
-                      if (isAndroidSettings) {
-                        Intent accessibilityIntent = new Intent(android.provider.Settings.ACTION_LOCALE_SETTINGS);
-                        context.startActivity(accessibilityIntent);
+                        showHiddenSettings();
                       }
                       break;
                   }
