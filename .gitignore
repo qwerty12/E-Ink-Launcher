@@ -16,3 +16,4 @@ debug.keystore
 *.jks
 /app/build/
 /app/release/
+/keystore.properties
