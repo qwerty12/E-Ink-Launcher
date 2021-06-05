@@ -142,10 +142,10 @@ public class ItemCenter {
   }
 
   private void showHiddenSettings() {
-    String items[] = {"Accessibility settings", "Locale settings"};
+    final String items[] = {"Accessibility", "Locale"};
     final String activityAction[] = {android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS, android.provider.Settings.ACTION_LOCALE_SETTINGS};
     AlertDialog dialog1 = new AlertDialog.Builder(mContext)
-            .setTitle("Extra settings")
+            .setTitle("Additional Settings")
             .setItems(items, new DialogInterface.OnClickListener() {
               @Override
               public void onClick(DialogInterface dialog, int which) {
@@ -221,7 +221,7 @@ public class ItemCenter {
           if (!isAndroidSettings) {
             items = Arrays.copyOf(items, items.length - 1);
           } else {
-            items[items.length - 1] = "Extra settings...";
+            items[items.length - 1] = "Additional Settings";
           }
         }
       } catch (PackageManager.NameNotFoundException e) {
