@@ -62,7 +62,7 @@
     <string name="restart_launcher">Restart Launcher</string>
 
     <string-array name="power_menu">
-        <item>Power off</item>
+        <item>Power off (required to be a system app)</item>
         <item>Reboot</item>
     </string-array>
 

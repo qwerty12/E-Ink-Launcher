@@ -455,7 +455,8 @@ public class Launcher extends FragmentActivity {
     if (policyManager.isAdminActive(new ComponentName(this, AdminReceiver.class))) {
       policyManager.lockNow();
     } else {
-      activeManage();
+      ((Context) this).sendBroadcast(new Intent("com.mogu.lock_screen"));
+      //activeManage();
     }
   }
 

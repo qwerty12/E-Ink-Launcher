@@ -121,11 +121,15 @@ public class ItemCenter {
 //      }
           WifiControl.onClickWifiItem();
         } else if (itemInfo.id.equals(ItemCenter.BRIGHTNESS_ITEM_ID)) {
-          Intent brightnessIntent = new Intent();
-          brightnessIntent.setComponent(new ComponentName("com.android.systemui", "com.android.systemui.moan.MoanBrightnessDialogActivity"));
-          brightnessIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-          brightnessIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-          context.startActivity(brightnessIntent);
+          try {
+            Intent brightnessIntent = new Intent();
+            brightnessIntent.setComponent(new ComponentName("com.android.systemui", "com.android.systemui.moan.MoanBrightnessDialogActivity"));
+            brightnessIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            brightnessIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            context.startActivity(brightnessIntent);
+          } catch (Exception e) {
+            context.sendBroadcast(new Intent("com.mogu.show_brightness_dialog"));
+          }
         } else if (itemInfo.id.equals(ItemCenter.CONTRAST_ITEM_ID)) {
           Intent contrastIntent = new Intent();
           contrastIntent.setComponent(new ComponentName("com.android.systemui", "com.android.systemui.einksettings.EinkSettingsActivity"));
@@ -237,13 +241,13 @@ public class ItemCenter {
     switch (itemInfo.type) {
       case LauncherItemInfo.TYPE_SPECIAL:
         if (itemInfo.id.equals(ONE_KEY_LOCK_ITEM_ID)) {
-          if (!isSystemApp) return;
           new AlertDialog.Builder(context)
-                  .setTitle(R.string.power_title)
+                  //.setTitle(R.string.power_title)
                   .setItems(R.array.power_menu, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                       if (which == 0) {
+                        if (!isSystemApp) return;
                         Intent intent = new Intent("android.intent.action.ACTION_REQUEST_SHUTDOWN");
                         intent.putExtra("android.intent.extra.KEY_CONFIRM", false);//true 确认是否关机
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -257,12 +261,16 @@ public class ItemCenter {
   //                      intenet.putExtra("interval",1);
   //                      intenet.putExtra("window",0);
   //                      getContext().sendBroadcast(intenet);
-                        PowerManager pManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-                        pManager.reboot(null);
+                        try {
+                          PowerManager pManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+                          pManager.reboot(null);
+                        } catch (Exception e) {
+                          context.sendBroadcast(new Intent("com.mgs.reboot"));
+                        }
                       }
                     }
                   })
-                  .setPositiveButton("取消", null)
+                  .setPositiveButton("Cancel", null)
                   .show();
       } else if (itemInfo.id.equals(ItemCenter.WIFI_ITEM_ID)) {
         WifiControl.onLongClickWifiItem();
@@ -317,13 +325,24 @@ public class ItemCenter {
                       break;
                     case 1:
                       /* https://github.com/butzist/ActivityLauncher */
-                      Intent dpiIntent = new Intent();
-                      dpiIntent.setComponent(new ComponentName("com.moan.launcher", "com.moan.launcher.settings.EinkSettingsDialog"));
-                      dpiIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                      dpiIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                      dpiIntent.putExtra("appname", itemInfo.title + " ");
-                      dpiIntent.putExtra("packagename", itemInfo.packageName);
-                      context.startActivity(dpiIntent);
+                      Intent dpiIntent;
+                      try {
+                        dpiIntent = new Intent();
+                        dpiIntent.setComponent(new ComponentName("com.moan.launcher", "com.moan.launcher.settings.EinkSettingsDialog"));
+                        dpiIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        dpiIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        dpiIntent.putExtra("appname", itemInfo.title + " ");
+                        dpiIntent.putExtra("packagename", itemInfo.packageName);
+                        context.startActivity(dpiIntent);
+                      } catch (Exception e) {
+                        dpiIntent = new Intent();
+                        dpiIntent.setComponent(new ComponentName("com.mgs.settings", "com.mgs.settings.app.EinkSettingsDialog"));
+                        dpiIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        dpiIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        dpiIntent.putExtra("appname", itemInfo.title + " ");
+                        dpiIntent.putExtra("packagename", itemInfo.packageName);
+                        context.startActivity(dpiIntent);
+                      }
                       break;
                     case 2:
                       Intent appDetailsIntent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + itemInfo.packageName));
