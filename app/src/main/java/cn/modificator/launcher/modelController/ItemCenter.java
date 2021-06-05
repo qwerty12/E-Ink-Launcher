@@ -1,5 +1,7 @@
 package cn.modificator.launcher.modelController;
 
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -15,9 +17,11 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.AlignmentSpan;
 import android.text.style.RelativeSizeSpan;
+import android.view.Window;
 import android.widget.TextView;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -129,7 +133,13 @@ public class ItemCenter {
           contrastIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
           context.startActivity(contrastIntent);
         } else if (itemInfo.id.equals(ItemCenter.REFRESH_ITEM_ID)) {
-          context.sendBroadcast(new Intent("android.eink.force.refresh"));
+          try {
+            Window win = ((Activity) context).getWindow();
+            Method forceGlobalRefresh = win.getClass().getMethod("forceGlobalRefresh", boolean.class);
+            forceGlobalRefresh.invoke(win, true /* "rightnow" */);
+          } catch (Exception e) {
+            context.sendBroadcast(new Intent("android.eink.force.refresh"));
+          }
         }
         break;
       case LauncherItemInfo.TYPE_LAUNCHER_ACTIVITY:
@@ -142,16 +152,79 @@ public class ItemCenter {
   }
 
   private void showHiddenSettings() {
-    final String items[] = {"Accessibility", "Locale"};
+    final String items[] = {"Accessibility", "Locale", "Automatic Refresh"};
     final String activityAction[] = {android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS, android.provider.Settings.ACTION_LOCALE_SETTINGS};
-    AlertDialog dialog1 = new AlertDialog.Builder(mContext)
+    new AlertDialog.Builder(mContext)
             .setTitle("Additional Settings")
             .setItems(items, new DialogInterface.OnClickListener() {
               @Override
               public void onClick(DialogInterface dialog, int which) {
+                if (which >= activityAction.length) {
+                  if (which == 2) {
+                    showAutomaticRefreshDialog();
+                  }
+                  return;
+                }
                 Intent intent = new Intent(activityAction[which]);
                 if (intent != null)
                   mContext.startActivity(intent);
+              }
+            })
+            .show();
+  }
+
+  private void showAutomaticRefreshDialog() {
+    final String prop = "persist.display.gu16_max_limit";
+    final String[] items = {"Never", "Five pages", "Ten pages", "Twenty pages"};
+
+    int current;
+    try {
+      // https://stackoverflow.com/a/11623309
+      Class SystemProperties = Class.forName("android.os.SystemProperties");
+      Method method = SystemProperties.getDeclaredMethod("getInt", String.class, int.class);
+      current = (int) method.invoke(null, prop, -1);
+    } catch (Exception e) {
+      return;
+    }
+
+    if (current > 0 && current < 5)
+      current = 0;
+    else if (current >= 5 && current < 10)
+      current = 1;
+    else if (current >= 10 && current < 20)
+      current = 2;
+    else if (current >= 20)
+      current = 3;
+
+    new AlertDialog.Builder(mContext)
+            .setTitle("Force refresh after")
+            .setSingleChoiceItems(items, current, new DialogInterface.OnClickListener() {
+              @Override
+              public void onClick(DialogInterface dialog, int which) {
+                String new_value;
+                switch (which) {
+                  case 0:
+                    new_value = "0";
+                    break;
+                  case 1:
+                    new_value = "5";
+                    break;
+                  case 2:
+                    new_value = "10";
+                    break;
+                  case 3:
+                    new_value = "20";
+                    break;
+                  default:
+                    dialog.dismiss();
+                    return;
+                }
+                try {
+                  // yeah, on a normal Android device you shouldn't be able to do this...
+                  Method setSystemProp = ActivityManager.class.getMethod("setSystemProp", String.class, String.class);
+                  setSystemProp.invoke(((ActivityManager) mContext.getSystemService("activity")), prop, new_value);
+                } catch (Exception e) {}
+                dialog.dismiss();
               }
             })
             .show();
@@ -182,7 +255,7 @@ public class ItemCenter {
   //                      intenet.putExtra("window",0);
   //                      getContext().sendBroadcast(intenet);
                         PowerManager pManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-                        pManager.reboot("重启");
+                        pManager.reboot(null);
                       }
                     }
                   })
@@ -205,7 +278,7 @@ public class ItemCenter {
     case LauncherItemInfo.TYPE_LAUNCHER_ACTIVITY:
       SpannableStringBuilder title = new SpannableStringBuilder(itemInfo.title);
       title.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, title.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-      title.setSpan(new RelativeSizeSpan(1.75f), 0,title.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE); // set size
+      title.setSpan(new RelativeSizeSpan(1.75f), 0,title.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
       title.append("\n\n");
       title.append(context.getString(R.string.dialog_pkg_name, itemInfo.packageName));
       title.append("\n");
