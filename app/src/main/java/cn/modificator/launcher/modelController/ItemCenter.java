@@ -184,6 +184,7 @@ public class ItemCenter {
       Method method = SystemProperties.getDeclaredMethod("getInt", String.class, int.class);
       current = (int) method.invoke(null, prop, -1);
     } catch (Exception e) {
+      e.printStackTrace();
       return;
     }
 
@@ -223,7 +224,9 @@ public class ItemCenter {
                   // yeah, on a normal Android device you shouldn't be able to do this...
                   Method setSystemProp = ActivityManager.class.getMethod("setSystemProp", String.class, String.class);
                   setSystemProp.invoke(((ActivityManager) mContext.getSystemService("activity")), prop, new_value);
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                  e.printStackTrace();
+                }
                 dialog.dismiss();
               }
             })
