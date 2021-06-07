@@ -451,8 +451,12 @@ public class Launcher extends FragmentActivity {
     return super.onKeyDown(keyCode, event);
   }
 
+  public boolean isDeviceAdmin() {
+    return policyManager.isAdminActive(new ComponentName(this, AdminReceiver.class));
+  }
+
   public void lockScreen() {
-    if (policyManager.isAdminActive(new ComponentName(this, AdminReceiver.class))) {
+    if (isDeviceAdmin()) {
       policyManager.lockNow();
     } else {
       ((Context) this).sendBroadcast(new Intent("com.mogu.lock_screen"));
@@ -460,7 +464,7 @@ public class Launcher extends FragmentActivity {
     }
   }
 
-  private void activeManage() {
+  public void activeManage() {
     Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
     intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, new ComponentName(this, AdminReceiver.class));
     intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, getText(R.string.dev_admin_desc));

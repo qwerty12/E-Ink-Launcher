@@ -62,8 +62,9 @@
     <string name="restart_launcher">Restart Launcher</string>
 
     <string-array name="power_menu">
-        <item>Power off (required to be a system app)</item>
+        <item>Power off</item>
         <item>Reboot</item>
+        <item>Request device admin</item>
     </string-array>
 
     <string name="power_title">现在可以操作电源了哦~</string>

@@ -3,6 +3,7 @@ package cn.modificator.launcher.modelController;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,6 +20,7 @@ import android.text.style.AlignmentSpan;
 import android.text.style.RelativeSizeSpan;
 import android.view.Window;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -135,7 +137,11 @@ public class ItemCenter {
           contrastIntent.setComponent(new ComponentName("com.android.systemui", "com.android.systemui.einksettings.EinkSettingsActivity"));
           contrastIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
           contrastIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-          context.startActivity(contrastIntent);
+          try {
+            context.startActivity(contrastIntent);
+          } catch (Exception e) {
+            return;
+          }
         } else if (itemInfo.id.equals(ItemCenter.REFRESH_ITEM_ID)) {
           try {
             Window win = ((Activity) context).getWindow();
@@ -241,18 +247,29 @@ public class ItemCenter {
     switch (itemInfo.type) {
       case LauncherItemInfo.TYPE_SPECIAL:
         if (itemInfo.id.equals(ONE_KEY_LOCK_ITEM_ID)) {
+          String[] items = context.getResources().getStringArray(R.array.power_menu);
+          if (((Launcher) context).isDeviceAdmin())
+            items = Arrays.copyOf(items, items.length - 1);
           new AlertDialog.Builder(context)
                   //.setTitle(R.string.power_title)
-                  .setItems(R.array.power_menu, new DialogInterface.OnClickListener() {
+                  .setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                       if (which == 0) {
-                        if (!isSystemApp) return;
+                        if (!isSystemApp) {
+                          Toast.makeText(context, "E-Ink Launcher is not a system app", Toast.LENGTH_SHORT).show();
+                          return;
+                        }
                         Intent intent = new Intent("android.intent.action.ACTION_REQUEST_SHUTDOWN");
                         intent.putExtra("android.intent.extra.KEY_CONFIRM", false);//true 确认是否关机
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(intent);
-                      } else {
+                        try {
+                          context.startActivity(intent);
+                        } catch (ActivityNotFoundException e) {
+                          intent.setAction("com.android.internal.intent.action.REQUEST_SHUTDOWN");
+                          context.startActivity(intent);
+                        }
+                      } else if (which == 1){
   //                      Intent intent = new Intent("android.intent.action.REBOOT");
   //                      intent.putExtra("android.intent.extra.KEY_CONFIRM", false);//true 确认是否关机
   //                      intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -267,6 +284,8 @@ public class ItemCenter {
                         } catch (Exception e) {
                           context.sendBroadcast(new Intent("com.mgs.reboot"));
                         }
+                      } else if (which == 2) {
+                        ((Launcher) context).activeManage();
                       }
                     }
                   })
@@ -281,7 +300,11 @@ public class ItemCenter {
         refreshIntent.setComponent(new ComponentName("com.android.systemui", "com.android.systemui.einksettings.RefreshModeSelectDialog"));
         refreshIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         refreshIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        context.startActivity(refreshIntent);
+        try {
+          context.startActivity(refreshIntent);
+        } catch (Exception e) {
+          return;
+        }
       } else if (itemInfo.id.equals(ItemCenter.REFRESH_ITEM_ID)) {
         context.sendBroadcast(new Intent("com.mogu.clear_mem"));
       }
@@ -325,22 +348,16 @@ public class ItemCenter {
                       break;
                     case 1:
                       /* https://github.com/butzist/ActivityLauncher */
-                      Intent dpiIntent;
+                      Intent dpiIntent = new Intent();
+                      dpiIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                      dpiIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                      dpiIntent.putExtra("appname", itemInfo.title + " ");
+                      dpiIntent.putExtra("packagename", itemInfo.packageName);
                       try {
-                        dpiIntent = new Intent();
                         dpiIntent.setComponent(new ComponentName("com.moan.launcher", "com.moan.launcher.settings.EinkSettingsDialog"));
-                        dpiIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        dpiIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        dpiIntent.putExtra("appname", itemInfo.title + " ");
-                        dpiIntent.putExtra("packagename", itemInfo.packageName);
                         context.startActivity(dpiIntent);
                       } catch (Exception e) {
-                        dpiIntent = new Intent();
                         dpiIntent.setComponent(new ComponentName("com.mgs.settings", "com.mgs.settings.app.EinkSettingsDialog"));
-                        dpiIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        dpiIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        dpiIntent.putExtra("appname", itemInfo.title + " ");
-                        dpiIntent.putExtra("packagename", itemInfo.packageName);
                         context.startActivity(dpiIntent);
                       }
                       break;
