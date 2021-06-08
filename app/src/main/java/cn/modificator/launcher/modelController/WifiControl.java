@@ -1,6 +1,7 @@
 package cn.modificator.launcher.modelController;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -102,13 +103,16 @@ public class WifiControl {
   }
 
   private void setMoguStatus(boolean enabled) {
+    final int newSetting = enabled ? 1 : 0;
+    final ContentResolver cr = mContext.getContentResolver();
     try {
-      Settings.Global.getInt(mContext.getContentResolver(), "mogu_wifi_status");
+      if (Settings.Global.getInt(cr, "mogu_wifi_status") == newSetting)
+        return;
     } catch (Settings.SettingNotFoundException e) {
       return;
     }
     try {
-      Settings.Global.putInt(mContext.getContentResolver(), "mogu_wifi_status", enabled ? 1 : 0);
+      Settings.Global.putInt(cr, "mogu_wifi_status", newSetting);
     } catch (SecurityException e) {
       e.printStackTrace();
       //Toast.makeText(mContext, "You need to run this on a computer: adb shell pm grant " + mContext.getPackageName() + " " + Manifest.permission.WRITE_SECURE_SETTINGS, Toast.LENGTH_LONG).show();
