@@ -101,14 +101,30 @@ public class WifiControl {
     }
   }
 
+  private void setMoguStatus(boolean enabled) {
+    try {
+      Settings.Global.getInt(mContext.getContentResolver(), "mogu_wifi_status");
+    } catch (Settings.SettingNotFoundException e) {
+      return;
+    }
+    try {
+      Settings.Global.putInt(mContext.getContentResolver(), "mogu_wifi_status", enabled ? 1 : 0);
+    } catch (SecurityException e) {
+      e.printStackTrace();
+      //Toast.makeText(mContext, "You need to run this on a computer: adb shell pm grant " + mContext.getPackageName() + " " + Manifest.permission.WRITE_SECURE_SETTINGS, Toast.LENGTH_LONG).show();
+    }
+  }
 
   public static void onClickWifiItem(){
     int wifiApState = instance.wifiManager.getWifiState();  //获取wifi状态
 
-    if (wifiApState == instance.wifiManager.WIFI_STATE_ENABLING || wifiApState == instance.wifiManager.WIFI_STATE_ENABLED)
+    if (wifiApState == instance.wifiManager.WIFI_STATE_ENABLING || wifiApState == instance.wifiManager.WIFI_STATE_ENABLED) {
       instance.wifiManager.setWifiEnabled(false);
-    else
+      instance.setMoguStatus(false);
+    } else {
       instance.wifiManager.setWifiEnabled(true);
+      instance.setMoguStatus(true);
+    }
   }
 
   public static void onLongClickWifiItem(){
