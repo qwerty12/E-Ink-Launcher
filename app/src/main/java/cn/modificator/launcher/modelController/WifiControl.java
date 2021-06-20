@@ -1,5 +1,6 @@
 package cn.modificator.launcher.modelController;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import cn.modificator.launcher.R;
+import cn.modificator.launcher.Utils;
 import cn.modificator.launcher.widgets.ObserverFontTextView;
 import cn.modificator.launcher.widgets.RatioImageView;
 
@@ -38,6 +40,7 @@ public class WifiControl {
   String connectWifiName;
 
   private static WifiControl instance;
+  private static final String TAG = "APActivity";
 
   public static void init(Context context){
     instance = new WifiControl(context.getApplicationContext());
@@ -103,6 +106,9 @@ public class WifiControl {
   }
 
   private void setMoguStatus(boolean enabled) {
+    if (!Utils.isMoann)
+      return;
+
     final int newSetting = enabled ? 1 : 0;
     final ContentResolver cr = mContext.getContentResolver();
     try {
@@ -115,7 +121,9 @@ public class WifiControl {
       Settings.Global.putInt(cr, "mogu_wifi_status", newSetting);
     } catch (SecurityException e) {
       e.printStackTrace();
-      //Toast.makeText(mContext, "You need to run this on a computer: adb shell pm grant " + mContext.getPackageName() + " " + Manifest.permission.WRITE_SECURE_SETTINGS, Toast.LENGTH_LONG).show();
+      final String msg = "To stop the WiFi from turning on automatically, you need to run this on a computer: adb shell pm grant " + mContext.getPackageName() + " " + Manifest.permission.WRITE_SECURE_SETTINGS;
+      Log.w(TAG, msg);
+      //Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
     }
   }
 
@@ -170,7 +178,7 @@ public class WifiControl {
           NetworkInfo networkInfo = (NetworkInfo) parcelableExtra;
           switch (networkInfo.getState()) {
             case CONNECTED:
-              Log.e("APActivity", "CONNECTED");
+              Log.e(TAG, "CONNECTED");
 //                            appName.setSingleLine(false);
               String wifiName = "";
               if (networkInfo.getExtraInfo()!=null) {
@@ -187,22 +195,22 @@ public class WifiControl {
 
               break;
             case CONNECTING:
-              Log.e("APActivity", "CONNECTING");
+              Log.e(TAG, "CONNECTING");
               showNameRes = R.string.wifi_status_connecting;
               break;
             case DISCONNECTED:
-              Log.e("APActivity", "DISCONNECTED");
+              Log.e(TAG, "DISCONNECTED");
               showNameRes = R.string.wifi_status_disconnected;
               break;
             case DISCONNECTING:
-              Log.e("APActivity", "DISCONNECTING");
+              Log.e(TAG, "DISCONNECTING");
               showNameRes = R.string.wifi_status_disconnecting;
               break;
             case SUSPENDED:
-              Log.e("APActivity", "SUSPENDED");
+              Log.e(TAG, "SUSPENDED");
               break;
             case UNKNOWN:
-              Log.e("APActivity", "UNKNOWN");
+              Log.e(TAG, "UNKNOWN");
               break;
             default:
               break;

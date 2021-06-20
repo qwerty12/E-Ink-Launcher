@@ -36,7 +36,7 @@
     <string name="dialog_cancel">取消</string>
     <string name="dialog_hide">隐藏</string>
     <string name="dialog_uninstall">卸载</string>
-    <string name="dialog_pkg_name">包名: %s （可以选中复制）</string>
+    <string name="dialog_pkg_name">包名: %s\n（可以选中复制）</string>
     <string name="dialog_close">关闭</string>
 
     <string name="wifi_status_off">Wi-Fi 已关闭</string>
@@ -53,6 +53,7 @@
     <string-array name="power_menu">
         <item>关机</item>
         <item>重启</item>
+        <item>请求设备管理员</item>
     </string-array>
     <string name="setting_cloud_manager_on">网络传书 （开）</string>
     <string name="setting_cloud_manager_off">网络传书 （关）</string>

@@ -41,7 +41,7 @@
     <string name="dialog_cancel">Anuluj</string>
     <string name="dialog_hide">Ukryj</string>
     <string name="dialog_uninstall">Odinstaluj</string>
-    <string name="dialog_pkg_name">Nazwa pakietu: %s (You can copy and select it)</string>
+    <string name="dialog_pkg_name">Nazwa pakietu: %s\n(You can copy and select it)</string>
     <string name="dialog_close">Zamknij</string>
 
     <string name="wifi_status_off">Wi-Fi wył.</string>
@@ -58,6 +58,7 @@
     <string-array name="power_menu">
         <item>Wyłącz</item>
         <item>Uruchom ponownie</item>
+        <item>Administrator urządzenie żądanie</item>
     </string-array>
     <string name="power_title">现在可以操作电源了哦~</string>
     <string name="setting_help_and_about">Pomoc i informacje</string>

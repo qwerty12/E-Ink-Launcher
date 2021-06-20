@@ -12,6 +12,7 @@ import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.text.TextUtils;
 
 import androidx.core.graphics.drawable.DrawableCompat;
 
@@ -28,6 +29,8 @@ import java.util.List;
  * Created by mod on 16-5-6.
  */
 public class Utils {
+
+  public static final boolean isMoann = TextUtils.equals(Build.DEVICE,"virgo-perf1");
 
   public static Bitmap createBitmapFromDrawable(Drawable drawable, int size, Context context) {
     Canvas canvas = new Canvas();

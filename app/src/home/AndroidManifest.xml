@@ -3,6 +3,7 @@
     package="cn.modificator.launcher">
     <application>
         <activity
+            android:hardwareAccelerated="false"
             android:name=".Launcher"
             android:launchMode="singleTask">
             <intent-filter>

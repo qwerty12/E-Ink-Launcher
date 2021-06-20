@@ -15,7 +15,7 @@
     <string name="dialog_close">닫기</string>
     <string name="dialog_confim">확인</string>
     <string name="dialog_hide">숨기기</string>
-    <string name="dialog_pkg_name">패키지 이름: %s (You can copy and select it)</string>
+    <string name="dialog_pkg_name">패키지 이름: %s\n(You can copy and select it)</string>
     <string name="dialog_uninstall">제거</string>
     <string name="empty_directory_hint">빈 디렉토리</string>
     <string name="exit">종료</string>
@@ -66,5 +66,6 @@
     <string-array name="power_menu">
         <item>전원 끄기</item>
         <item>재시작</item>
+        <item>장치 관리자 요청</item>
     </string-array>
 </resources>

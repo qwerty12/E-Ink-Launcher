@@ -13,7 +13,6 @@ import android.content.res.ColorStateList;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.KeyEvent;
 import android.view.View;
@@ -459,8 +458,11 @@ public class Launcher extends FragmentActivity {
     if (isDeviceAdmin()) {
       policyManager.lockNow();
     } else {
-      ((Context) this).sendBroadcast(new Intent("com.mogu.lock_screen"));
-      //activeManage();
+      if (Utils.isMoann){
+        ((Context) this).sendBroadcast(new Intent("com.mogu.lock_screen"));
+      } else {
+        activeManage();
+      }
     }
   }
 
@@ -491,7 +493,7 @@ public class Launcher extends FragmentActivity {
     return ((pInfo.applicationInfo.flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0);
   }
 
-    public static boolean isUserApp(PackageInfo pInfo) {
+  public static boolean isUserApp(PackageInfo pInfo) {
     return (!isSystemApp(pInfo) && !isSystemUpdateApp(pInfo));
   }
 
@@ -505,7 +507,7 @@ public class Launcher extends FragmentActivity {
   }
 
   private void checkLaunchHomeNotification(){
-    if (!TextUtils.equals(Build.DEVICE,"virgo-perf1")){
+    if (!Utils.isMoann) {
       return;
     }
     Intent service = new Intent(this, HomeEntranceService.class);

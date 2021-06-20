@@ -35,6 +35,7 @@ import java.util.Set;
 import cn.modificator.launcher.Config;
 import cn.modificator.launcher.Launcher;
 import cn.modificator.launcher.R;
+import cn.modificator.launcher.Utils;
 import cn.modificator.launcher.widgets.EInkLauncherView;
 
 /**
@@ -162,7 +163,7 @@ public class ItemCenter {
   }
 
   private void showHiddenSettings() {
-    final String items[] = {"Accessibility", "Locale", "Automatic Refresh"};
+    final String items[] = {"Accessibility", "Locale", "Automatic Refresh (Moann)"};
     final String activityAction[] = {android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS, android.provider.Settings.ACTION_LOCALE_SETTINGS};
     new AlertDialog.Builder(mContext)
             .setTitle("Additional Settings")
@@ -187,6 +188,9 @@ public class ItemCenter {
     final String prop = "persist.display.gu16_max_limit";
     final String[] items = {"Never", "Five pages", "Ten pages", "Twenty pages"};
 
+    if (!Utils.isMoann)
+      return;
+
     int current;
     try {
       // https://stackoverflow.com/a/11623309
@@ -198,14 +202,15 @@ public class ItemCenter {
       return;
     }
 
-    if (current > 0 && current < 5)
-      current = 0;
-    else if (current >= 5 && current < 10)
+    if (current == 0);
+    else if (current == 5)
       current = 1;
-    else if (current >= 10 && current < 20)
+    else if (current == 10)
       current = 2;
-    else if (current >= 20)
+    else if (current == 20)
       current = 3;
+    else
+      current = -1;
 
     new AlertDialog.Builder(mContext)
             .setTitle("Force refresh after")
@@ -248,7 +253,7 @@ public class ItemCenter {
       case LauncherItemInfo.TYPE_SPECIAL:
         if (itemInfo.id.equals(ONE_KEY_LOCK_ITEM_ID)) {
           String[] items = context.getResources().getStringArray(R.array.power_menu);
-          if (((Launcher) context).isDeviceAdmin())
+          if (!Utils.isMoann || ((Launcher) context).isDeviceAdmin())
             items = Arrays.copyOf(items, items.length - 1);
           new AlertDialog.Builder(context)
                   //.setTitle(R.string.power_title)
@@ -289,7 +294,7 @@ public class ItemCenter {
                       }
                     }
                   })
-                  .setPositiveButton("Cancel", null)
+                  .setPositiveButton(R.string.dialog_cancel, null)
                   .show();
       } else if (itemInfo.id.equals(ItemCenter.WIFI_ITEM_ID)) {
         WifiControl.onLongClickWifiItem();
@@ -322,14 +327,12 @@ public class ItemCenter {
 
       final boolean isAndroidSettings = itemInfo.packageName.equals("com.android.settings");
 
-      String items[] = {/*context.getString(R.string.dialog_cancel),*/ "Hide", "DPI Setting", "App Info", context.getString(R.string.dialog_uninstall)};
+      String items[] = {/*context.getString(R.string.dialog_cancel),*/ "Hide", "DPI Setting (Moann)", "App Info", context.getString(R.string.dialog_uninstall)};
       try {
-        if (isAndroidSettings || !Launcher.isUserApp(context.getPackageManager().getPackageInfo(itemInfo.packageName, 0))) {
-          if (!isAndroidSettings) {
-            items = Arrays.copyOf(items, items.length - 1);
-          } else {
-            items[items.length - 1] = "Additional Settings";
-          }
+        if (isAndroidSettings) {
+          items[items.length - 1] = "Additional Settings";
+        } else if (!Launcher.isUserApp(context.getPackageManager().getPackageInfo(itemInfo.packageName, 0))) {
+          items = Arrays.copyOf(items, items.length - 1);
         }
       } catch (PackageManager.NameNotFoundException e) {
         e.printStackTrace();
@@ -357,8 +360,10 @@ public class ItemCenter {
                         dpiIntent.setComponent(new ComponentName("com.moan.launcher", "com.moan.launcher.settings.EinkSettingsDialog"));
                         context.startActivity(dpiIntent);
                       } catch (Exception e) {
-                        dpiIntent.setComponent(new ComponentName("com.mgs.settings", "com.mgs.settings.app.EinkSettingsDialog"));
-                        context.startActivity(dpiIntent);
+                        if (Utils.isMoann) {
+                          dpiIntent.setComponent(new ComponentName("com.mgs.settings", "com.mgs.settings.app.EinkSettingsDialog"));
+                          context.startActivity(dpiIntent);
+                        }
                       }
                       break;
                     case 2:
@@ -509,9 +514,11 @@ public class ItemCenter {
 
     mAllItems.add(createPowerItem());
     mAllItems.add(createWifiItem());
-    mAllItems.add(createBrightnessItem());
-    mAllItems.add(createContrastItem());
-    mAllItems.add(createRefreshItem());
+    if (Utils.isMoann) {
+      mAllItems.add(createBrightnessItem());
+      mAllItems.add(createContrastItem());
+      mAllItems.add(createRefreshItem());
+    }
   }
 
   private void loadAllReplacedIcons() {
